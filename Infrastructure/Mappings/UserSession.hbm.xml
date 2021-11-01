@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="API"
+                   namespace="Core.Entities">
+	<class name="UserSession" table="user_sessions">
+		<id name="SessionId" column ="session_id">
+			<generator class="native" />
+		</id>
+		<property name="UserId" column ="user_id" />
+		<property name="TokenExpirationDate" column ="token_expiration_date" />
+		<property name="UserToken" column ="user_token" />
+	</class>
+</hibernate-mapping>
