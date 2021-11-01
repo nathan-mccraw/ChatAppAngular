@@ -9,7 +9,6 @@ C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.AssemblyInfoInputs.cache
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.AssemblyInfo.cs
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.csproj.CoreCompileInputs.cache
-C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.csproj.CopyComplete
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.dll
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\ref\Infrastructure.dll
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.pdb

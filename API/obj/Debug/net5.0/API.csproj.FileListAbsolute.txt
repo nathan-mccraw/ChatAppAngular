@@ -54,9 +54,9 @@ C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\staticw
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\staticwebassets\API.StaticWebAssets.xml
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\scopedcss\bundle\API.styles.css
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\API.RazorTargetAssemblyInfo.cache
-C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\API.csproj.CopyComplete
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\API.dll
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\ref\API.dll
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\API.pdb
 C:\Users\nateR\onedrive\documents\github\theoutpost\API\obj\Debug\net5.0\API.genruntimeconfig.cache
 C:\Users\nateR\onedrive\documents\github\theoutpost\api\bin\Debug\net5.0\nhibernate.cfg.xml
+C:\Users\nateR\OneDrive\Documents\GitHub\TheOutpost\API\obj\Debug\net5.0\API.csproj.CopyComplete
