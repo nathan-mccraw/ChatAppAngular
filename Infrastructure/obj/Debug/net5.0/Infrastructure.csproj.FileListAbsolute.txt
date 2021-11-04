@@ -12,3 +12,4 @@ C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.dll
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\ref\Infrastructure.dll
 C:\Users\nateR\onedrive\documents\github\theoutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.pdb
+C:\Users\nateR\OneDrive\Documents\GitHub\TheOutpost\Infrastructure\obj\Debug\net5.0\Infrastructure.csproj.CopyComplete
