@@ -22,11 +22,11 @@ namespace Infrastructure.Repository
             _sessionFactory = sessionFactory;
         }
 
-        public UserModel CreateUser(UserEntity userAttempt)
+        public async Task<UserModel> CreateUser(UserEntity userAttempt)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                bool usernameExist = session.Query<UserEntity>().Where(x => x.Username == userAttempt.Username).Any();
+                bool usernameExist = await session.Query<UserEntity>().Where(x => x.Username == userAttempt.Username).AnyAsync();
                 if (usernameExist)
                 {
                     throw new ApplicationException("Username Exist, Please choose another username");
@@ -37,22 +37,22 @@ namespace Infrastructure.Repository
                     userAttempt.Password = hashedPassword;
                     using (var transmit = session.BeginTransaction())
                     {
-                        session.Save(userAttempt);
-                        transmit.Commit();
+                        await session.SaveAsync(userAttempt);
+                        await transmit.CommitAsync();
                     }
                     return new UserModel(userAttempt);
                 }
             }
         }
 
-        public string DeleteUserFromDB(SignInModel userAttempt)
+        public async Task<string> DeleteUserFromDB(SignInModel userAttempt)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                var userEntity = session.Query<UserEntity>().Where(x => x.Username == userAttempt.Username).FirstOrDefault();
+                var userEntity = await session.Query<UserEntity>().Where(x => x.Username == userAttempt.Username).FirstOrDefaultAsync();
                 if (userEntity.Password == userAttempt.Password)
                 {
-                    session.Delete(userEntity);
+                    await session.DeleteAsync(userEntity);
                     return ("Deleted User!");
                 }
                 else
@@ -62,11 +62,11 @@ namespace Infrastructure.Repository
             }
         }
 
-        public UserModel EditUser(UserEntity userAttempt)
+        public async Task<UserModel> EditUser(UserEntity userAttempt)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                var userEntity = session.Query<UserEntity>().Where(x => x.UserId == userAttempt.UserId).FirstOrDefault();
+                var userEntity = await session.Query<UserEntity>().Where(x => x.UserId == userAttempt.UserId).FirstOrDefaultAsync();
                 if (userEntity.Password == userAttempt.Password)
                 {
                     if (userAttempt.Username != "")
@@ -78,8 +78,8 @@ namespace Infrastructure.Repository
 
                     using (var transmit = session.BeginTransaction())
                     {
-                        session.Save(userEntity);
-                        transmit.Commit();
+                        await session.SaveAsync(userEntity);
+                        await transmit.CommitAsync();
                     }
 
                     return new UserModel(userEntity);
@@ -91,13 +91,13 @@ namespace Infrastructure.Repository
             }
         }
 
-        public UserModel GetUserByIdFromDB(int id)
+        public async Task<UserModel> GetUserByIdFromDB(int id)
         {
             try
             {
                 using (var session = _sessionFactory.OpenSession())
                 {
-                    var user = session.Query<UserEntity>().Where(x => x.UserId == id).First();
+                    var user = await session.Query<UserEntity>().Where(x => x.UserId == id).FirstOrDefaultAsync();
                     return new UserModel(user);
                 };
             }
@@ -107,19 +107,19 @@ namespace Infrastructure.Repository
             }
         }
 
-        public UserEntity GetUserEntity(int id)
+        public async Task<UserEntity> GetUserEntity(int id)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                return session.Query<UserEntity>().Where(x => x.UserId == id).First();
+                return await session.Query<UserEntity>().Where(x => x.UserId == id).FirstOrDefaultAsync();
             }
         }
 
-        public Task<List<UserModel>> GetUsersListFromDB()
+        public async Task<List<UserModel>> GetUsersListFromDB()
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                return session.Query<UserEntity>()
+                return await session.Query<UserEntity>()
                     .Select(user => new UserModel(user))
                     .ToListAsync();
             };
@@ -137,11 +137,11 @@ namespace Infrastructure.Repository
             };
         }
 
-        public UserModel SignIn(SignInModel userAttempt)
+        public async Task<UserModel> SignIn(SignInModel userAttempt)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                var userEntity = session.Query<UserEntity>().Where(x => x.Username == userAttempt.Username).FirstOrDefault();
+                var userEntity = await session.Query<UserEntity>().Where(x => x.Username == userAttempt.Username).FirstOrDefaultAsync();
                 if (userEntity.Password == userAttempt.Password)
                 {
                     UserSessionEntity userSession = new();
@@ -149,8 +149,8 @@ namespace Infrastructure.Repository
 
                     using (var transmit = session.BeginTransaction())
                     {
-                        session.Save(userSession);
-                        transmit.Commit();
+                        await session.SaveAsync(userSession);
+                        await transmit.CommitAsync();
                     }
 
                     UserModel userModel = new UserModel(userEntity);

@@ -13,18 +13,18 @@ namespace Core.Interfaces
     {
         Task<List<UserModel>> GetUsersListFromDB();
 
-        UserModel GetUserByIdFromDB(int id);
+        Task<UserModel> GetUserByIdFromDB(int id);
 
-        UserEntity GetUserEntity(int id);
+        Task<UserEntity> GetUserEntity(int id);
 
         void PostUserToDB(UserEntity user);
 
-        string DeleteUserFromDB(SignInModel userAttempt);
+        Task<string> DeleteUserFromDB(SignInModel userAttempt);
 
-        UserModel CreateUser(UserEntity userAttempt);
+        Task<UserModel> CreateUser(UserEntity userAttempt);
 
-        UserModel EditUser(UserEntity userAttempt);
+        Task<UserModel> EditUser(UserEntity userAttempt);
 
-        UserModel SignIn(SignInModel userAttempt);
+        Task<UserModel> SignIn(SignInModel userAttempt);
     }
 }

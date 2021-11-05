@@ -25,33 +25,35 @@ namespace Infrastructure.Repository
             _userSessRepo = userSessionRepository;
         }
 
-        public Task<List<MessageModel>> GetMessagesFromDB()
+        public async Task<List<MessageModel>> GetMessagesFromDB()
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                return session.Query<MessageEntity>()
+                var messageEnt = await session.Query<MessageEntity>()
                     .Select(message => new MessageModel(message))
                     .ToListAsync();
+
+                return messageEnt;
             };
         }
 
-        public MessageModel GetMessageByIdFromDB(int id)
+        public async Task<MessageModel> GetMessageByIdFromDB(int id)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                var message = session.Query<MessageEntity>()
-                                .First(msg => msg.MessageId == id);
+                var message = await session.Query<MessageEntity>()
+                                           .FirstOrDefaultAsync(msg => msg.MessageId == id);
 
                 return new MessageModel(message);
             };
         }
 
-        public MessageModel PostMessageToDB(IncomingMessageModel incomingMessage)
+        public async Task<MessageModel> PostMessageToDB(IncomingMessageModel incomingMessage)
         {
             UserSessionEntity userSess;
             try
             {
-                userSess = _userSessRepo.GetUserSession(incomingMessage.User.UserId);
+                userSess = await _userSessRepo.GetUserSession(incomingMessage.User.UserId);
             }
             catch (ArgumentNullException)
             {
@@ -65,7 +67,7 @@ namespace Infrastructure.Repository
                 _userSessRepo.UpdateUserSession(incomingMessage.User.UserId);
 
                 //find UserEntity that sent message
-                var userEntity = _userRepo.GetUserEntity(incomingMessage.User.UserId);
+                var userEntity = await _userRepo.GetUserEntity(incomingMessage.User.UserId);
 
                 //make new messageEntity to post in DB
                 MessageEntity message = new() { Text = incomingMessage.Text, User = userEntity };
@@ -75,8 +77,8 @@ namespace Infrastructure.Repository
                 {
                     using (var transmit = session.BeginTransaction())
                     {
-                        session.Save(message);
-                        transmit.Commit();
+                        await session.SaveAsync(message);
+                        await transmit.CommitAsync();
                     }
                 };
 

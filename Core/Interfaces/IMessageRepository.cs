@@ -12,9 +12,9 @@ namespace Core.Interfaces
     {
         Task<List<MessageModel>> GetMessagesFromDB();
 
-        MessageModel GetMessageByIdFromDB(int id);
+        Task<MessageModel> GetMessageByIdFromDB(int id);
 
-        MessageModel PostMessageToDB(IncomingMessageModel incomingMessage);
+        Task<MessageModel> PostMessageToDB(IncomingMessageModel incomingMessage);
 
         void DeleteMessageFromDB(int id);
     }

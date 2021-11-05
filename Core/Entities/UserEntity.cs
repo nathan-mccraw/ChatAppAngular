@@ -15,6 +15,6 @@ namespace Core.Entities
         public virtual string LastName { get; set; }
         public virtual DateTime DateCreated { get; set; } = DateTime.Now;
         public virtual DateTime LastActive { get; set; }
-        public Guid UserToken { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        //public virtual Guid UserToken { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

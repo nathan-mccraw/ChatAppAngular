@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
-		<None Remove="Mappings\Message.hbm.xml" />
-		<None Remove="Mappings\User.hbm.xml" />
-		<None Remove="Mappings\UserSession.hbm.xml" />
+	  <None Remove="Mappings\Message.hbm.xml" />
+	  <None Remove="Mappings\User.hbm.xml" />
+	  <None Remove="Mappings\UserSession.hbm.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Mappings\Message.hbm.xml" />
-		<EmbeddedResource Include="Mappings\User.hbm.xml" />
-		<EmbeddedResource Include="Mappings\UserSession.hbm.xml" />
+	  <EmbeddedResource Include="Mappings\Message.hbm.xml" />
+	  <EmbeddedResource Include="Mappings\User.hbm.xml" />
+	  <EmbeddedResource Include="Mappings\UserSession.hbm.xml" />
 	</ItemGroup>
 
 	<ItemGroup>

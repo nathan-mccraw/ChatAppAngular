@@ -45,7 +45,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task PostMessage(IncomingMessageModel incomingMessage)
         {
-            MessageModel outgoingMessage = _repo.PostMessageToDB(incomingMessage);
+            MessageModel outgoingMessage = await _repo.PostMessageToDB(incomingMessage);
             await _chatHub.Clients.All.ReceiveMessage(outgoingMessage);
         }
 

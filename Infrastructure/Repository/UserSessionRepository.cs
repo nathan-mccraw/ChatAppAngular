@@ -2,6 +2,7 @@
 using Core.InputValidationModels;
 using Core.Interfaces;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,24 +20,26 @@ namespace Infrastructure.Repository
             _sessionFactory = sessionFactory;
         }
 
-        public UserSessionEntity GetUserSession(int id)
+        public async Task<UserSessionEntity> GetUserSession(int id)
         {
             using (var session = _sessionFactory.OpenSession())
             {
-                return session.Query<UserSessionEntity>()
-                                .First(usr => usr.UserId == id);
+                var userSess = await session.Query<UserSessionEntity>()
+                                .FirstOrDefaultAsync(usr => usr.UserId == id);
+
+                return userSess;
             };
         }
 
-        public UserSessionEntity CreateNewUserSession(int userId)
+        public async Task<UserSessionEntity> CreateNewUserSession(int userId)
         {
             var userSession = new UserSessionEntity { UserId = userId };
             using (var session = _sessionFactory.OpenSession())
             {
                 using (var transmit = session.BeginTransaction())
                 {
-                    session.Save(userSession);
-                    transmit.Commit();
+                    await session.SaveAsync(userSession);
+                    await transmit.CommitAsync();
                 }
             };
 
