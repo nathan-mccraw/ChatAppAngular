@@ -87,7 +87,7 @@ namespace Infrastructure.Repository
             }
             else if (userSess.UserToken != incomingMessage.User.UserToken)
             {
-                throw new InvalidOperationException("You tried to post a message as different user! Please logout and login again");
+                throw new InvalidOperationException("You are not authorized to post this message! Please re-login");
             }
             else if (!_userSessRepo.IsUserSessionNotExpired(userSess))
             {
