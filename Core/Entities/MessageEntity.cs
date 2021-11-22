@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class MessageEntity
+    public class MessageEntity : BaseEntity
     {
         public virtual int MessageId { get; set; }
         public virtual string Text { get; set; }

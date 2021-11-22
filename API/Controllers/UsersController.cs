@@ -1,8 +1,8 @@
-﻿using Core.DTOs;
+﻿using API.DTOs;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,33 +16,35 @@ namespace API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _repo;
+        private readonly IGenericRepository<UserEntity> _repo;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository repository)
+        public UsersController(IGenericRepository<UserEntity> repository, IMapper mapper)
         {
             _repo = repository;
+            _mapper = mapper;
         }
 
         // GET: api/<UsersController>
         [HttpGet]
-        public async Task<ActionResult<List<UserModel>>> GetUsers()
+        public ActionResult<IReadOnlyList<UserModel>> GetUsers()
         {
-            var users = await _repo.GetUsersListFromDB();
-            return Ok(users);
+            var users = _repo.GetAllEntitiesFromDB();
+            return Ok(_mapper.Map<IReadOnlyList<UserEntity>, IReadOnlyList<UserModel>>(users));
         }
 
         // GET: api/<UsersController>/5
         [HttpGet("{id}")]
         public ActionResult<UserModel> GetUserById(int id)
         {
-            return Ok(_repo.GetUserByIdFromDB(id));
+            return Ok(_repo.GetEntityByIdFromDB(id));
         }
 
         // POST: api/<UsersController>
         [HttpPost]
         public void Post(UserEntity user)
         {
-            _repo.PostUserToDB(user);
+            _repo.AddEntityToDB(user);
         }
     }
 }

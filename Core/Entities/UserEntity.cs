@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class UserEntity
+    public class UserEntity : BaseEntity
     {
         public virtual int UserId { get; set; }
         public virtual string Username { get; set; }

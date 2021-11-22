@@ -10,9 +10,9 @@ namespace Core.UserVerification
 {
     public class UserVerify
     {
-        private readonly IUserRepository _userRepo;
+        private readonly IGenericRepository<UserEntity> _userRepo;
 
-        public UserVerify(IUserRepository userRepo)
+        public UserVerify(IGenericRepository<UserEntity> userRepo)
         {
             _userRepo = userRepo;
         }
@@ -21,7 +21,7 @@ namespace Core.UserVerification
         {
             try
             {
-                _userRepo.GetUserByIdFromDB(user.UserId);
+                _userRepo.GetEntityByIdFromDB(user.UserId);
                 return true;
             }
             catch (ArgumentNullException)

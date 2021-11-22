@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using NHibernate.NetCore;
 using API.Hub;
-using Core.DTOs;
 using Core.Interfaces;
 using Infrastructure.Repository;
-using Core.UserVerification;
+using API.DTOs;
+using AutoMapper;
 
 namespace API
 {
@@ -30,6 +30,13 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfiles());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -45,8 +52,7 @@ namespace API
             services.AddHibernate(path);
             services.AddControllers();
             services.AddSignalR();
-            services.AddScoped<IMessageRepository, MessageRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUserSessionRepository, UserSessionRepository>();
             services.AddSpaStaticFiles(config =>
                 config.RootPath = "client/build");
