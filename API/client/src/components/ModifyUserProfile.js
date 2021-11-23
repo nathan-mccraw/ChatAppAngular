@@ -45,8 +45,6 @@ const ModifyUserProfile = ({ user, setUser }) => {
                             name="username"
                             className="form-control"
                             placeholder={user.username}
-                            aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default"
                         />
                     </div>
                 </div>
@@ -60,8 +58,6 @@ const ModifyUserProfile = ({ user, setUser }) => {
                             name="password"
                             className="form-control"
                             placeholder="Minimum 4 digits"
-                            aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default"
                             required
                         />
                     </div>
@@ -76,8 +72,6 @@ const ModifyUserProfile = ({ user, setUser }) => {
                             name="confirmPassword"
                             className="form-control"
                             placeholder="Minimum 4 digits"
-                            aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default"
                             required
                         />
                     </div>
@@ -92,8 +86,6 @@ const ModifyUserProfile = ({ user, setUser }) => {
                             name="firstName"
                             className="form-control"
                             placeholder={user.firstName}
-                            aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default"
                         />
                     </div>
                 </div>
@@ -107,8 +99,6 @@ const ModifyUserProfile = ({ user, setUser }) => {
                             name="lastName"
                             className="form-control"
                             placeholder={user.lastName}
-                            aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-default"
                         />
                     </div>
                 </div>

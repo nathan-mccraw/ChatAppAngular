@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.DTOs
+namespace Core.DTOs
 {
-    public class MessageModel
+    public class UserModel
     {
-        public int MessageId { get; set; }
-        public string Text { get; set; }
         public int UserId { get; set; }
         public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public DateTime DateCreated { get; set; }
+        public DateTime LastActive { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿using API.DTOs;
-using AutoMapper;
+﻿using AutoMapper;
+using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Specifications;
@@ -35,7 +35,7 @@ namespace API.Controllers
             else
             {
                 var newUser = _userRepo.AddEntityToDB(userAttempt);
-                var newUserSession = new UserSessionEntity { UserId = newUser.UserId };
+                var newUserSession = new UserSessionEntity { UserId = newUser.Id };
                 newUserSession = _userSessRepo.AddEntityToDB(newUserSession);
                 var sessionToReturn = _mapper.Map<UserSessionEntity, UserSessionModel>(newUserSession);
 

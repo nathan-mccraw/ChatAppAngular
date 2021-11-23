@@ -4,14 +4,14 @@
                    namespace="Core.Entities">
 
 	<class name="UserEntity" table="users">
-		<id name="UserId" column ="user_id" type="int">
+		<id name="Id" column ="id" type="int">
 			<generator class="native" />
 		</id>
 		<property name="Username" column ="username" />
 		<property name="Password" column ="password" />
 		<property name="FirstName" column ="first_name" />
 		<property name="LastName" column ="last_name" />
+		<property name="UserSessionId" column ="session_id" />
 		<property name="DateCreated" column ="date_created" />
-		<property name="LastActive" column="last_active" />
 	</class>
 </hibernate-mapping>

@@ -1,5 +1,5 @@
-﻿using API.DTOs;
-using AutoMapper;
+﻿using AutoMapper;
+using Core.DTOs;
 using Core.Entities;
 using Core.InputValidationModels;
 using Core.Interfaces;
@@ -34,10 +34,10 @@ namespace API.Controllers
         public ActionResult<UserSessionModel> SignInUser([FromBody] SignInModel userAttempt)
         {
             var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            var mathcingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
-            if (mathcingUsernameInDb.Password == userAttempt.Password)
+            var matchingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
+            if (matchingUsernameInDb.Password == userAttempt.Password)
             {
-                var userSession = _userSessRepo.GetEntityByIdFromDB(mathcingUsernameInDb.UserId);
+                var userSession = _userSessRepo.GetEntityByIdFromDB(matchingUsernameInDb.Id);
                 if (userSession != null && userSession.TokenExpirationDate > DateTime.UtcNow)
                 {
                     //update token expiration
@@ -48,10 +48,10 @@ namespace API.Controllers
                 {
                     if (userSession != null)
                     {
-                        _userSessRepo.DeleteEntityFromDB(userSession.SessionId);
+                        _userSessRepo.DeleteEntityFromDB(userSession.Id);
                     }
 
-                    userSession = new UserSessionEntity { UserId = mathcingUsernameInDb.UserId };
+                    userSession = new UserSessionEntity { UserId = matchingUsernameInDb.Id, Username = matchingUsernameInDb.Username };
                     userSession = _userSessRepo.AddEntityToDB(userSession);
                     return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(userSession));
                 }
@@ -64,36 +64,64 @@ namespace API.Controllers
 
         // PUT api/<SignIn>
         [HttpPut]
-        public ActionResult<UserModel> EditUserEntity([FromBody] UserEntity userAttempt)
+        public ActionResult<UserSessionModel> EditUserEntity([FromBody] UserEntity userAttempt)
         {
-            var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            var mathcingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
-            if (mathcingUsernameInDb.Password == userAttempt.Password)
-            {
-                var userSession = _userSessRepo.GetEntityByIdFromDB(mathcingUsernameInDb.UserId);
-                if (userSession != null && userSession.TokenExpirationDate > DateTime.UtcNow)
-                {
-                    userSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                    return Ok(userSession);
-                }
-                else
-                {
-                    if (userSession != null)
-                    {
-                        _userSessRepo.DeleteEntityFromDB(userSession.SessionId);
-                    }
-
-                    userSession = new UserSessionEntity { UserId = mathcingUsernameInDb.UserId };
-                    userSession = _userSessRepo.AddEntityToDB(userSession);
-                    return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(userSession));
-                }
-
-                //edit existing userEntity using generic put and building new specs
-            }
-            else
+            var currentUserEntity = _userRepo.GetEntityByIdFromDB(userAttempt.Id);
+            if (currentUserEntity.Password != userAttempt.Password)
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
+
+            var userSession = _userSessRepo.GetEntityByIdFromDB(currentUserEntity.Id);
+            if (userSession != null && userSession.TokenExpirationDate > DateTime.UtcNow)
+            {
+                userSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+                userSession.LastActive = DateTime.UtcNow;
+                _userSessRepo.UpdateEntityInDB(userSession);
+            }
+            else
+            {
+                if (userSession != null)
+                {
+                    _userSessRepo.DeleteEntityFromDB(userSession.Id);
+                }
+
+                userSession = new UserSessionEntity { UserId = currentUserEntity.Id };
+                userSession = _userSessRepo.AddEntityToDB(userSession);
+            }
+
+            if(userAttempt.Username != null)
+            {
+                var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
+                if (_userRepo.GetEntitiesWithSpec(specs) != null)
+                {
+                    return BadRequest("Username already exists. Please put a new username");
+                }
+
+                currentUserEntity.Username = userAttempt.Username;
+                    
+            }
+
+            if(userAttempt.FirstName != null)
+            {
+                currentUserEntity.FirstName = userAttempt.FirstName;
+            }
+
+            if(userAttempt.LastName != null)
+            {
+                currentUserEntity.LastName = userAttempt.LastName;
+            }
+
+            _userRepo.UpdateEntityInDB(currentUserEntity);
+
+            return Ok(new UserSessionModel
+            {
+                UserId = userSession.UserId,
+                Username = currentUserEntity.Username,
+                UserToken = userSession.UserToken,
+                TokenExpirationDate = userSession.TokenExpirationDate,
+                LastActive = userSession.LastActive
+            });
         }
 
         // DELETE api/SignIn/5
@@ -104,13 +132,13 @@ namespace API.Controllers
             var mathcingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
             if (mathcingUsernameInDb.Password == userAttempt.Password)
             {
-                var userSession = _userSessRepo.GetEntityByIdFromDB(mathcingUsernameInDb.UserId);
+                var userSession = _userSessRepo.GetEntityByIdFromDB(mathcingUsernameInDb.Id);
                 if (userSession != null)
                 {
-                    _userSessRepo.DeleteEntityFromDB(userSession.SessionId);
+                    _userSessRepo.DeleteEntityFromDB(userSession.Id);
                 }
 
-                _userRepo.DeleteEntityFromDB(mathcingUsernameInDb.UserId);
+                _userRepo.DeleteEntityFromDB(mathcingUsernameInDb.Id);
 
                 return Ok();
             }

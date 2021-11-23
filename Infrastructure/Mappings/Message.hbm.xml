@@ -3,11 +3,15 @@
                    assembly="Core"
                    namespace="Core.Entities">
 	<class name="MessageEntity" table="messages">
-		<id name="MessageId" column = "message_id">
+		<id name="Id" column = "id">
 			<generator class="native" />
 		</id>
-		<property name="Text" column = "text" />
-		<many-to-one name="User" class="UserEntity" column ="user_id" />
+		<property name="Text" column = "message" />
+		<property name="UserId" column ="user_id" />
 		<property name="DateCreated" column ="date_created" />
+		<join table="users" inverse="true">
+			<key column="id"/>
+			<property name="Username" column="username"/>
+		</join>
 	</class>
 </hibernate-mapping>

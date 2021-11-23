@@ -1,5 +1,5 @@
-﻿using API.DTOs;
-using AutoMapper;
+﻿using AutoMapper;
+using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;

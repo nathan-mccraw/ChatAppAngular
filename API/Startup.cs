@@ -11,8 +11,8 @@ using NHibernate.NetCore;
 using API.Hub;
 using Core.Interfaces;
 using Infrastructure.Repository;
-using API.DTOs;
 using AutoMapper;
+using API.Helpers;
 
 namespace API
 {
@@ -37,6 +37,7 @@ namespace API
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

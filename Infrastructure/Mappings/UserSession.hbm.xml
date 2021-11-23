@@ -3,11 +3,16 @@
                    assembly="Core"
                    namespace="Core.Entities">
 	<class name="UserSessionEntity" table="user_sessions">
-		<id name="SessionId" column ="session_id">
+		<id name="Id" column ="id">
 			<generator class="native" />
 		</id>
 		<property name="UserId" column ="user_id" />
+		<property name="LastActive" column ="last_active" />
 		<property name="TokenExpirationDate" column ="token_expiration_date" />
 		<property name="UserToken" column ="user_token" />
+		<join table="users" inverse="true">
+			<key column="id"/>
+			<property name="Username" column="username"/>
+		</join>
 	</class>
 </hibernate-mapping>

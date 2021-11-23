@@ -10,7 +10,7 @@ using Core.InputValidationModels;
 using Microsoft.AspNetCore.Authorization;
 using Core.Entities;
 using AutoMapper;
-using API.DTOs;
+using Core.DTOs;
 
 namespace API.Controllers
 {
@@ -56,28 +56,26 @@ namespace API.Controllers
 
         //POST api/Messages
         [HttpPost]
-        public void PostMessage(IncomingMessageModel inputMessage)
+        public ActionResult PostMessage(IncomingMessageModel inputMessage)
         {
-            var storedSession = _userSessRepo.GetEntityByIdFromDB(inputMessage.User.UserId);
+            var storedSession = _userSessRepo.GetEntityByIdFromDB(inputMessage.User.Id);
 
             if (storedSession == null)
             {
-                return;
+                return Unauthorized("Please signin to post a message");
             }
 
             if (storedSession.UserToken == inputMessage.User.UserToken
-                && storedSession.TokenExpirationDate < DateTime.UtcNow)
+                && storedSession.TokenExpirationDate > DateTime.UtcNow)
             {
                 //update usersession with new expiration date
                 var updateUserSession = inputMessage.User;
-                updateUserSession.TokenExpirationDate = DateTime.UtcNow.AddHours(.25);
-                _userSessRepo.UpdateEntityInDB(updateUserSession);
-
-                //find UserEntity that sent message
-                var userEntity = _userRepo.GetEntityByIdFromDB(inputMessage.User.UserId);
+                updateUserSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+                var userSessionToAdd = _mapper.Map<UserSessionModel, UserSessionEntity>(updateUserSession);
+                _userSessRepo.UpdateEntityInDB(userSessionToAdd);
 
                 //make new messageEntity to post in DB
-                MessageEntity message = new() { Text = inputMessage.Text, User = userEntity };
+                MessageEntity message = new() { Text = inputMessage.Text, UserId = updateUserSession.UserId };
 
                 //post message to DB
                 _messageRepo.AddEntityToDB(message);
@@ -87,19 +85,17 @@ namespace API.Controllers
 
                 //broadcast to other clients a new message has been posted
                 _chatHub.Clients.All.ReceiveMessage(outgoingMessage);
+
+                return Ok();
             }
-            //            else if (userSess.UserToken != incomingMessage.User.UserToken)
-            //            {
-            //                throw new InvalidOperationException("You are not authorized to post this message! Please re-login");
-            //            }
-            //            else if (!_userSessRepo.IsUserSessionNotExpired(userSess))
-            //            {
-            //                throw new InvalidOperationException("Your session has expired, please login again");
-            //            }
-            //            else
-            //            {
-            //                throw new ApplicationException("Unknown Error");
-            //            }
+            else if (storedSession.TokenExpirationDate <= DateTime.UtcNow)
+            {
+                return Unauthorized("You have been logged out due to inactivity. Please signin again to post a message.");
+            }
+            else
+            {
+                throw new ApplicationException("Unknown Error");
+            }
         }
 
         // DELETE api/Messages/5
