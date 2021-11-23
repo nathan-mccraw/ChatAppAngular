@@ -7,11 +7,7 @@
 			<generator class="native" />
 		</id>
 		<property name="Text" column = "message" />
-		<property name="UserId" column ="user_id" />
 		<property name="DateCreated" column ="date_created" />
-		<join table="users" inverse="true">
-			<key column="id"/>
-			<property name="Username" column="username"/>
-		</join>
+		<many-to-one name="User" class="UserEntity" column ="user_id" />
 	</class>
 </hibernate-mapping>

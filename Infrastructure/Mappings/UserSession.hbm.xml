@@ -10,9 +10,5 @@
 		<property name="LastActive" column ="last_active" />
 		<property name="TokenExpirationDate" column ="token_expiration_date" />
 		<property name="UserToken" column ="user_token" />
-		<join table="users" inverse="true">
-			<key column="id"/>
-			<property name="Username" column="username"/>
-		</join>
 	</class>
 </hibernate-mapping>

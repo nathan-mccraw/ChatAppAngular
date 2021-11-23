@@ -58,24 +58,29 @@ namespace API.Controllers
         [HttpPost]
         public ActionResult PostMessage(IncomingMessageModel inputMessage)
         {
-            var storedSession = _userSessRepo.GetEntityByIdFromDB(inputMessage.User.Id);
+            var storedUserEntity = _userRepo.GetEntityByIdFromDB(inputMessage.User.Id);
 
-            if (storedSession == null)
+            if (storedUserEntity == null || storedUserEntity.UserSession.UserToken != inputMessage.User.UserToken)
             {
                 return Unauthorized("Please signin to post a message");
             }
+            else if (storedUserEntity.UserSession.TokenExpirationDate < DateTime.UtcNow)
+            {
+                return Unauthorized("You have been signed out due to inactivity. Please sign back in to post a message.");
+            }
+
+            var storedSession = storedUserEntity.UserSession;
 
             if (storedSession.UserToken == inputMessage.User.UserToken
                 && storedSession.TokenExpirationDate > DateTime.UtcNow)
             {
                 //update usersession with new expiration date
-                var updateUserSession = inputMessage.User;
-                updateUserSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                var userSessionToAdd = _mapper.Map<UserSessionModel, UserSessionEntity>(updateUserSession);
-                _userSessRepo.UpdateEntityInDB(userSessionToAdd);
+                storedSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+                storedSession.LastActive = DateTime.UtcNow;
+                _userSessRepo.UpdateEntityInDB(storedSession);
 
                 //make new messageEntity to post in DB
-                MessageEntity message = new() { Text = inputMessage.Text, UserId = updateUserSession.UserId };
+                MessageEntity message = new() { Text = inputMessage.Text, User = storedUserEntity };
 
                 //post message to DB
                 _messageRepo.AddEntityToDB(message);
@@ -87,10 +92,6 @@ namespace API.Controllers
                 _chatHub.Clients.All.ReceiveMessage(outgoingMessage);
 
                 return Ok();
-            }
-            else if (storedSession.TokenExpirationDate <= DateTime.UtcNow)
-            {
-                return Unauthorized("You have been logged out due to inactivity. Please signin again to post a message.");
             }
             else
             {

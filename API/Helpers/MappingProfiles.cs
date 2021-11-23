@@ -13,12 +13,12 @@ namespace API.Helpers
     {
         public MappingProfiles()
         {
-            CreateMap<MessageEntity, MessageModel>();
+            CreateMap<MessageEntity, MessageModel>()
+                .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))
+                .ForMember(d => d.Username, o => o.MapFrom(s => s.User.Username));
 
-            //CreateMap<IncomingMessageModel, MessageEntity>()
-            //    .ForMember(d => d.User.UserId, o => o.MapFrom(s => s.User.UserId));
-
-            CreateMap<UserEntity, UserModel>();
+            CreateMap<UserEntity, UserModel>()
+                .ForMember(d => d.LastActive, o => o.MapFrom(s => s.UserSession.LastActive));
 
             CreateMap<UserSessionEntity, UserSessionModel>();
             CreateMap<UserSessionModel, UserSessionEntity>();

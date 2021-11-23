@@ -22,6 +22,8 @@ namespace Core.Interfaces
 
         public TEntity UpdateEntityInDB(TEntity entity);
 
+        public TEntity MergeEntityInDB(TEntity entity);
+
         public void DeleteEntityFromDB(int id);
     }
 }

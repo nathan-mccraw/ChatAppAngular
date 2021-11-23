@@ -35,30 +35,21 @@ namespace API.Controllers
         {
             var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
             var matchingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
-            if (matchingUsernameInDb.Password == userAttempt.Password)
+            if (matchingUsernameInDb == null || matchingUsernameInDb.Password != userAttempt.Password)
             {
-                var userSession = _userSessRepo.GetEntityByIdFromDB(matchingUsernameInDb.Id);
-                if (userSession != null && userSession.TokenExpirationDate > DateTime.UtcNow)
-                {
-                    //update token expiration
-                    userSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                    return Ok(userSession);
-                }
-                else
-                {
-                    if (userSession != null)
-                    {
-                        _userSessRepo.DeleteEntityFromDB(userSession.Id);
-                    }
-
-                    userSession = new UserSessionEntity { UserId = matchingUsernameInDb.Id, Username = matchingUsernameInDb.Username };
-                    userSession = _userSessRepo.AddEntityToDB(userSession);
-                    return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(userSession));
-                }
+                return Unauthorized("The combination of entered Username and password is not valid");
+            }
+            else if (matchingUsernameInDb.UserSession == null)
+            {
+                return BadRequest("No session for that user exists. Please contact site adminstrator");
             }
             else
             {
-                return Unauthorized("The combination of entered Username and password is not valid");
+                var userSessionEntity = matchingUsernameInDb.UserSession;
+                userSessionEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+                userSessionEntity.LastActive = DateTime.UtcNow;
+                var sessionInDB = _userSessRepo.UpdateEntityInDB(userSessionEntity);
+                return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(sessionInDB));
             }
         }
 
@@ -67,30 +58,21 @@ namespace API.Controllers
         public ActionResult<UserSessionModel> EditUserEntity([FromBody] UserEntity userAttempt)
         {
             var currentUserEntity = _userRepo.GetEntityByIdFromDB(userAttempt.Id);
-            if (currentUserEntity.Password != userAttempt.Password)
+            if (currentUserEntity == null || currentUserEntity.Password != userAttempt.Password)
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
-
-            var userSession = _userSessRepo.GetEntityByIdFromDB(currentUserEntity.Id);
-            if (userSession != null && userSession.TokenExpirationDate > DateTime.UtcNow)
+            else if (currentUserEntity.UserSession == null)
             {
-                userSession.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                userSession.LastActive = DateTime.UtcNow;
-                _userSessRepo.UpdateEntityInDB(userSession);
-            }
-            else
-            {
-                if (userSession != null)
-                {
-                    _userSessRepo.DeleteEntityFromDB(userSession.Id);
-                }
-
-                userSession = new UserSessionEntity { UserId = currentUserEntity.Id };
-                userSession = _userSessRepo.AddEntityToDB(userSession);
+                return BadRequest("No session for that user exists. Please contact site adminstrator");
             }
 
-            if(userAttempt.Username != null)
+            var userSessionEntity = currentUserEntity.UserSession;
+            userSessionEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+            userSessionEntity.LastActive = DateTime.UtcNow;
+            var sessionInDB = _userSessRepo.UpdateEntityInDB(userSessionEntity);
+
+            if (userAttempt.Username != null)
             {
                 var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
                 if (_userRepo.GetEntitiesWithSpec(specs) != null)
@@ -99,29 +81,21 @@ namespace API.Controllers
                 }
 
                 currentUserEntity.Username = userAttempt.Username;
-                    
             }
 
-            if(userAttempt.FirstName != null)
+            if (userAttempt.FirstName != null)
             {
                 currentUserEntity.FirstName = userAttempt.FirstName;
             }
 
-            if(userAttempt.LastName != null)
+            if (userAttempt.LastName != null)
             {
                 currentUserEntity.LastName = userAttempt.LastName;
             }
 
             _userRepo.UpdateEntityInDB(currentUserEntity);
 
-            return Ok(new UserSessionModel
-            {
-                UserId = userSession.UserId,
-                Username = currentUserEntity.Username,
-                UserToken = userSession.UserToken,
-                TokenExpirationDate = userSession.TokenExpirationDate,
-                LastActive = userSession.LastActive
-            });
+            return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(sessionInDB));
         }
 
         // DELETE api/SignIn/5
@@ -129,23 +103,18 @@ namespace API.Controllers
         public ActionResult Delete(SignInModel userAttempt)
         {
             var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            var mathcingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
-            if (mathcingUsernameInDb.Password == userAttempt.Password)
-            {
-                var userSession = _userSessRepo.GetEntityByIdFromDB(mathcingUsernameInDb.Id);
-                if (userSession != null)
-                {
-                    _userSessRepo.DeleteEntityFromDB(userSession.Id);
-                }
+            var matchingUsernameInDb = _userRepo.GetEntityWithSpec(specs);
 
-                _userRepo.DeleteEntityFromDB(mathcingUsernameInDb.Id);
-
-                return Ok();
-            }
-            else
+            if (matchingUsernameInDb == null || matchingUsernameInDb.Password != userAttempt.Password)
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
+
+            var userSessionEntity = matchingUsernameInDb.UserSession;
+            _userSessRepo.DeleteEntityFromDB(userSessionEntity.Id);
+            _userRepo.DeleteEntityFromDB(matchingUsernameInDb.Id);
+
+            return Ok();
         }
     }
 }

@@ -37,14 +37,15 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public ActionResult<UserModel> GetUserById(int id)
         {
-            return Ok(_repo.GetEntityByIdFromDB(id));
+            var user = _repo.GetEntityByIdFromDB(id);
+            return Ok(_mapper.Map<UserEntity, UserModel>(user));
         }
 
         // POST: api/<UsersController>
-        [HttpPost]
-        public void Post(UserEntity user)
-        {
-            _repo.AddEntityToDB(user);
-        }
+        //[HttpPost]
+        //public void Post(UserEntity user)
+        //{
+        //    _repo.AddEntityToDB(user);
+        //}
     }
 }

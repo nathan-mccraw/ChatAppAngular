@@ -43,6 +43,12 @@ namespace Infrastructure.Repository
             return entity;
         }
 
+        public TEntity MergeEntityInDB(TEntity entity)
+        {
+            _session.Merge(entity);
+            return entity;
+        }
+
         public IReadOnlyList<TEntity> GetEntitiesWithSpec(ISpecification<TEntity> spec)
         {
             return ApplySpecification(spec).ToList();

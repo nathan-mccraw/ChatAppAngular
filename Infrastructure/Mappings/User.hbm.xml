@@ -11,7 +11,7 @@
 		<property name="Password" column ="password" />
 		<property name="FirstName" column ="first_name" />
 		<property name="LastName" column ="last_name" />
-		<property name="UserSessionId" column ="session_id" />
+		<many-to-one name="UserSession" class="UserSessionEntity" column="session_id" unique="true" />
 		<property name="DateCreated" column ="date_created" />
 	</class>
 </hibernate-mapping>
