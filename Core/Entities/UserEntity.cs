@@ -12,7 +12,9 @@ namespace Core.Entities
         public virtual string Password { get; set; }
         public virtual string FirstName { get; set; }
         public virtual string LastName { get; set; }
-        public virtual UserSessionEntity UserSession { get; set; }
-        public virtual DateTime DateCreated { get; set; } = DateTime.Now;
+        public virtual Guid UserToken { get; set; } = Guid.NewGuid();
+        public virtual DateTime TokenExpirationDate { get; set; } = DateTime.UtcNow.AddHours(.25);
+        public virtual DateTime LastActive { get; set; } = DateTime.UtcNow;
+        public virtual DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }

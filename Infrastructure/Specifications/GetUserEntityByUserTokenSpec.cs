@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Specifications
 {
-    public class GetUserEntityByUsernameSpec : BaseSpecification<UserEntity>
+    public class GetUserEntityByUserTokenSpec : BaseSpecification<UserEntity>
     {
-        public GetUserEntityByUsernameSpec(string userName)
-            : base(u => u.Username.ToLower() == userName.ToLower())
+        public GetUserEntityByUserTokenSpec(Guid userToken) : base(u => u.UserToken == userToken)
         {
         }
     }

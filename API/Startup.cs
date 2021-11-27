@@ -54,7 +54,6 @@ namespace API
             services.AddControllers();
             services.AddSignalR();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUserSessionRepository, UserSessionRepository>();
             services.AddSpaStaticFiles(config =>
                 config.RootPath = "client/build");
 

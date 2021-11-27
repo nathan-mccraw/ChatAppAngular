@@ -12,35 +12,52 @@ namespace API.Controllers
     public class SignUpController : ControllerBase
     {
         private readonly IGenericRepository<UserEntity> _userRepo;
-        private readonly IGenericRepository<UserSessionEntity> _userSessRepo;
         private readonly IMapper _mapper;
 
-        public SignUpController(IGenericRepository<UserEntity> userRepository, IGenericRepository<UserSessionEntity> userSessionRepository, IMapper mapper)
+        public SignUpController(IGenericRepository<UserEntity> userRepository, IMapper mapper)
         {
             _userRepo = userRepository;
-            _userSessRepo = userSessionRepository;
             _mapper = mapper;
         }
 
-        // POST api/<SignUp>
+        //POST api/SignUp
         [HttpPost]
-        public ActionResult<UserSessionModel> Post(UserEntity userAttempt)
+        public ActionResult<UserSessionModel> SignUpNewUser(UserEntity userAttempt)
         {
             //If username already exists in db then return error
             var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            if (_userRepo.GetEntityWithSpec(specs) == null)
+            if (_userRepo.GetEntityWithSpec(specs) != null)
             {
                 return BadRequest("Username Already Exists");
             }
             else
             {
                 var newUser = _userRepo.AddEntityToDB(userAttempt);
-                var newUserSession = new UserSessionEntity { UserId = newUser.Id };
-                newUserSession = _userSessRepo.AddEntityToDB(newUserSession);
-                var sessionToReturn = _mapper.Map<UserSessionEntity, UserSessionModel>(newUserSession);
+                var userSession = _mapper.Map<UserEntity, UserSessionModel>(newUser);
 
-                return Ok(sessionToReturn);
+                return Ok(userSession);
             }
+        }
+
+        //Get api/SignUp
+        [HttpGet]
+        public ActionResult<UserSessionModel> SignUpGuest()
+        {
+            var newGuest = new UserEntity
+            {
+                Username = "Guest",
+                Password = "guest",
+                FirstName = "Guest",
+                LastName = "Guest",
+            };
+            _userRepo.AddEntityToDB(newGuest);
+            var spec = new GetUserEntityByUserTokenSpec(newGuest.UserToken);
+            var updatedUser = _userRepo.GetEntityWithSpec(spec);
+            updatedUser.Username = "Guest" + updatedUser.Id;
+            _userRepo.UpdateEntityInDB(updatedUser);
+            var userSession = _mapper.Map<UserEntity, UserSessionModel>(updatedUser);
+
+            return Ok(userSession);
         }
     }
 }

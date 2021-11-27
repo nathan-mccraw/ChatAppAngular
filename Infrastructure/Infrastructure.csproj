@@ -2,14 +2,14 @@
 
 	<ItemGroup>
 	  <None Remove="Mappings\Message.hbm.xml" />
-	  <None Remove="Mappings\User.hbm.xml" />
-	  <None Remove="Mappings\UserSession.hbm.xml" />
+	  <None Remove="Mappings\Users.hbm.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Mappings\Message.hbm.xml" />
-	  <EmbeddedResource Include="Mappings\User.hbm.xml" />
-	  <EmbeddedResource Include="Mappings\UserSession.hbm.xml" />
+	  <EmbeddedResource Include="Mappings\Users.hbm.xml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

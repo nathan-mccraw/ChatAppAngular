@@ -19,13 +19,11 @@ namespace API.Controllers
     public class SignInController : ControllerBase
     {
         private readonly IGenericRepository<UserEntity> _userRepo;
-        private readonly IGenericRepository<UserSessionEntity> _userSessRepo;
         private readonly IMapper _mapper;
 
-        public SignInController(IGenericRepository<UserEntity> userRepository, IGenericRepository<UserSessionEntity> userSessionRepo, IMapper mapper)
+        public SignInController(IGenericRepository<UserEntity> userRepository, IMapper mapper)
         {
             _userRepo = userRepository;
-            _userSessRepo = userSessionRepo;
             _mapper = mapper;
         }
 
@@ -39,43 +37,33 @@ namespace API.Controllers
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
-            else if (matchingUsernameInDb.UserSession == null)
-            {
-                return BadRequest("No session for that user exists. Please contact site adminstrator");
-            }
             else
             {
-                var userSessionEntity = matchingUsernameInDb.UserSession;
-                userSessionEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                userSessionEntity.LastActive = DateTime.UtcNow;
-                var sessionInDB = _userSessRepo.UpdateEntityInDB(userSessionEntity);
-                return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(sessionInDB));
+                matchingUsernameInDb.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+                matchingUsernameInDb.LastActive = DateTime.UtcNow;
+                var UpdatedUserEntity = _userRepo.UpdateEntityInDB(matchingUsernameInDb);
+                return Ok(_mapper.Map<UserEntity, UserSessionModel>(UpdatedUserEntity));
             }
         }
 
         // PUT api/<SignIn>
         [HttpPut]
-        public ActionResult<UserSessionModel> EditUserEntity([FromBody] UserEntity userAttempt)
+        public ActionResult<UserSessionModel> EditUserEntity([FromBody] IncomingUserProfile userAttempt)
         {
-            var currentUserEntity = _userRepo.GetEntityByIdFromDB(userAttempt.Id);
+            var spec = new GetUserEntityByUserTokenSpec(userAttempt.User.UserToken);
+            var currentUserEntity = _userRepo.GetEntityWithSpec(spec);
             if (currentUserEntity == null || currentUserEntity.Password != userAttempt.Password)
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
-            else if (currentUserEntity.UserSession == null)
-            {
-                return BadRequest("No session for that user exists. Please contact site adminstrator");
-            }
 
-            var userSessionEntity = currentUserEntity.UserSession;
-            userSessionEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-            userSessionEntity.LastActive = DateTime.UtcNow;
-            var sessionInDB = _userSessRepo.UpdateEntityInDB(userSessionEntity);
+            currentUserEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+            currentUserEntity.LastActive = DateTime.UtcNow;
 
             if (userAttempt.Username != null)
             {
                 var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-                if (_userRepo.GetEntitiesWithSpec(specs) != null)
+                if (_userRepo.GetEntityWithSpec(specs) != null)
                 {
                     return BadRequest("Username already exists. Please put a new username");
                 }
@@ -83,19 +71,19 @@ namespace API.Controllers
                 currentUserEntity.Username = userAttempt.Username;
             }
 
-            if (userAttempt.FirstName != null)
+            if (userAttempt.FirstName != "")
             {
                 currentUserEntity.FirstName = userAttempt.FirstName;
             }
 
-            if (userAttempt.LastName != null)
+            if (userAttempt.LastName != "")
             {
                 currentUserEntity.LastName = userAttempt.LastName;
             }
 
-            _userRepo.UpdateEntityInDB(currentUserEntity);
+            var UpdatedUserEntity = _userRepo.UpdateEntityInDB(currentUserEntity);
 
-            return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(sessionInDB));
+            return Ok(_mapper.Map<UserEntity, UserSessionModel>(UpdatedUserEntity));
         }
 
         // DELETE api/SignIn/5
@@ -110,8 +98,6 @@ namespace API.Controllers
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
 
-            var userSessionEntity = matchingUsernameInDb.UserSession;
-            _userSessRepo.DeleteEntityFromDB(userSessionEntity.Id);
             _userRepo.DeleteEntityFromDB(matchingUsernameInDb.Id);
 
             return Ok();

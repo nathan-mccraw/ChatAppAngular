@@ -17,11 +17,13 @@ namespace API.Helpers
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))
                 .ForMember(d => d.Username, o => o.MapFrom(s => s.User.Username));
 
-            CreateMap<UserEntity, UserModel>()
-                .ForMember(d => d.LastActive, o => o.MapFrom(s => s.UserSession.LastActive));
+            CreateMap<UserEntity, UserModel>();
 
-            CreateMap<UserSessionEntity, UserSessionModel>();
-            CreateMap<UserSessionModel, UserSessionEntity>();
+            CreateMap<UserEntity, UserSessionModel>();
+
+            //CreateMap<UserSessionEntity, UserSessionModel>()
+            //    .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))
+            //    .ForMember(d => d.Username, o => o.MapFrom(s => s.User.Username));
         }
     }
 }

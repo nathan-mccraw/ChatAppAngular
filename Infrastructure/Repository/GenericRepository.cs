@@ -25,6 +25,7 @@ namespace Infrastructure.Repository
         public void DeleteEntityFromDB(int id)
         {
             _session.Delete(_session.Load<TEntity>(id));
+            _session.Flush();
         }
 
         public IReadOnlyList<TEntity> GetAllEntitiesFromDB()
@@ -39,8 +40,10 @@ namespace Infrastructure.Repository
 
         public TEntity UpdateEntityInDB(TEntity entity)
         {
-            _session.Update(entity);
-            return entity;
+            TEntity persistantEntity = _session.Load<TEntity>(entity.Id);
+            persistantEntity = entity;
+            _session.Flush();
+            return persistantEntity;
         }
 
         public TEntity MergeEntityInDB(TEntity entity)

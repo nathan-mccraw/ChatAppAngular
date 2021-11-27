@@ -1,33 +1,36 @@
-﻿#chatRoom{
-    height: 67vh;
+﻿#chatRoom {
+  height: 67vh;
 }
 
-#friendsSideBar{
-    height: 91vh;
+#friendsSideBar {
+  height: 91vh;
 }
 
 #signIn {
-    background-image: url("Photos/OutPost.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: dimgray;
-    justify-content: center;
+  background-image: url("Photos/OutPost.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: dimgray;
+  justify-content: center;
+  overflow: hidden;
 }
 
-#RegisterNewUser, #ModifyUserProfile {
-    background-image: url("Photos/Trenches2.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-color: dimgray;
-    justify-content: center;
+#RegisterNewUser,
+#ModifyUserProfile {
+  background-image: url("Photos/Trenches2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-color: dimgray;
+  justify-content: center;
 }
 
-#RegisterFormBox, #ModifyUserFormBox {
-    background: linear-gradient(rgba(0,0,0,1), rgba(108,117,125,1));
+#RegisterFormBox,
+#ModifyUserFormBox {
+  background: linear-gradient(rgba(0, 0, 0, 1), rgba(108, 117, 125, 1));
 }
 
 #signInForm {
-    max-width: 500px;
+  max-width: 500px;
 }

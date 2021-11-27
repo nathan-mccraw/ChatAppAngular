@@ -7,10 +7,7 @@ namespace Core.DTOs
 {
     public class UserSessionModel
     {
-        public virtual int Id { get; set; }
-        public virtual int UserId { get; set; }
-        public virtual DateTime LastActive { get; set; }
-        public virtual DateTime TokenExpirationDate { get; set; } = DateTime.Now.AddHours(.25);
-        public virtual Guid UserToken { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
+        public Guid UserToken { get; set; }
     }
 }
