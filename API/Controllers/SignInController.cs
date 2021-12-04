@@ -37,6 +37,10 @@ namespace API.Controllers
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
+            else if (matchingUsernameInDb.DateDeleted != null)
+            {
+                return BadRequest("This profile has been deleted.");
+            }
             else
             {
                 matchingUsernameInDb.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
@@ -55,6 +59,10 @@ namespace API.Controllers
             if (currentUserEntity == null || currentUserEntity.Password != userAttempt.Password)
             {
                 return Unauthorized("The combination of entered Username and password is not valid");
+            }
+            else if (currentUserEntity.DateDeleted != null)
+            {
+                return BadRequest("This account has been deleted");
             }
 
             currentUserEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
@@ -98,9 +106,17 @@ namespace API.Controllers
                 return Unauthorized("The combination of entered Username and password is not valid");
             }
 
-            _userRepo.DeleteEntityFromDB(matchingUsernameInDb.Id);
-
-            return Ok();
+            try
+            {
+                matchingUsernameInDb.DateDeleted = DateTime.Now;
+                matchingUsernameInDb.Password = new Guid().ToString();
+                _userRepo.UpdateEntityInDB(matchingUsernameInDb);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -2,11 +2,11 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
-import FriendsSideBar from "./ChatPage/FriendsSideBar";
-import ChatInput from "./ChatPage/ChatInput.js";
-import ChatWindow from "./ChatPage/ChatWindow";
-import Footer from "./ChatPage/Footer";
-import TitleBar from "./ChatPage/TitleBar";
+import FriendsSideBar from "./FriendsList/FriendsSideBar";
+import ChatInput from "./ChatInput";
+import ChatWindow from "./ChatWindow/ChatWindow";
+import Footer from "./Footer";
+import TitleBar from "./TitleBar";
 import { useNavigate } from "react-router";
 
 const ChatPage = ({
@@ -19,7 +19,6 @@ const ChatPage = ({
   const [connection, setConnection] = useState(null);
   const [messageArray, setMessageArray] = useState("");
   const [chatMessage, setChatMessage] = useState("");
-
   const latestChat = useRef(null);
   latestChat.current = messageArray;
   const navigate = useNavigate();

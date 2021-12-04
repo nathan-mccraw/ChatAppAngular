@@ -5,7 +5,7 @@ import "./App.css";
 import SignInPage from "./components/SignIn";
 import RegisterNewUser from "./components/RegisterNewUser";
 import ModifyUserProfile from "./components/ModifyUserProfile";
-import ChatPage from "./components/ChatPage";
+import ChatPage from "./components/ChatPage/ChatPage";
 import Modal from "react-bootstrap/Modal";
 import SignOutModal from "./components/SignOutModal";
 import axios from "axios";
@@ -48,7 +48,7 @@ const App = () => {
         navigate("/Chat");
       })
       .catch((error) => {
-        console.log(error.response.data);
+        console.log(error.response);
       });
   };
 
@@ -83,28 +83,37 @@ const App = () => {
           exact
           path="/"
           element={
+            // userSession.userToken === "" ? (
             <SignInPage
               setUserSession={setUserSession}
               setUserProfile={setUserProfile}
               guestSignUp={guestSignUp}
             />
+            // ) : (
+            //   navigate("/Chat")
+            // )
           }
         />
         <Route
           exact
           path="/Register"
           element={
+            // userSession.userToken === "" ? (
             <RegisterNewUser
               setUserSession={setUserSession}
               setUserProfile={setUserProfile}
               guestSignUp={guestSignUp}
             />
+            // ) : (
+            //   navigate("/Chat")
+            // )
           }
         />
         <Route
           exact
           path="/AccountSettings"
           element={
+            // userSession.userToken !== "" ? (
             <ModifyUserProfile
               userProfile={userProfile}
               setUserProfile={setUserProfile}
@@ -112,12 +121,16 @@ const App = () => {
               setUserSession={setUserSession}
               signOut={signOut}
             />
+            // ) : (
+            //   navigate("/")
+            // )
           }
         />
         <Route
           exact
           path="/Chat"
           element={
+            // userSession.userToken !== "" ? (
             <ChatPage
               userProfile={userProfile}
               userSession={userSession}
@@ -125,6 +138,9 @@ const App = () => {
               modalStates={modalStates}
               signOut={signOut}
             />
+            // ) : (
+            //   navigate("/")
+            // )
           }
         />
       </Routes>

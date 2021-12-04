@@ -40,7 +40,8 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<MessageModel>> GetMessages()
         {
-            var messages = _messageRepo.GetAllEntitiesFromDB();
+            var spec = new GetMessagesNotDeleted();
+            var messages = _messageRepo.GetEntitiesWithSpec(spec);
             return Ok(_mapper.Map<IReadOnlyList<MessageEntity>, IReadOnlyList<MessageModel>>(messages));
         }
 
@@ -96,11 +97,20 @@ namespace API.Controllers
         }
 
         // DELETE api/Messages/5
-        [Authorize]
         [HttpDelete("{id}")]
-        public void DeleteMessage(int id)
+        public ActionResult DeleteMessage(int id)
         {
-            _messageRepo.DeleteEntityFromDB(id);
+            try
+            {
+                var message = _messageRepo.GetEntityByIdFromDB(id);
+                message.DateDeleted = DateTime.Now;
+                _messageRepo.UpdateEntityInDB(message);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

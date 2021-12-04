@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
 import Friend from "./Friend";
+import React from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 const FriendsSideBar = () => {
   const [otherUsersArray, setOtherUsersArray] = useState([]);
@@ -9,7 +10,7 @@ const FriendsSideBar = () => {
     axios.get("/api/users").then((response) => {
       setOtherUsersArray(response.data);
     });
-  });
+  }, []);
 
   return (
     <div className="col-md-auto p-0 pt-1 h-100 border-end border-secondary border-4">
