@@ -3,7 +3,6 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Container, Row } from "react-bootstrap";
 
 const SignInPage = ({ setUserSession, setUserProfile, guestSignUp }) => {
   const [signInFormState, setSignInFormState] = useState({
