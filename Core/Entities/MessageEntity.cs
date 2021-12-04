@@ -12,5 +12,6 @@ namespace Core.Entities
         public virtual string Text { get; set; }
         public virtual UserEntity User { get; set; }
         public virtual DateTime DateCreated { get; set; } = DateTime.Now;
+        public virtual DateTime? DateDeleted { get; set; } = null;
     }
 }

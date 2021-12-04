@@ -16,5 +16,6 @@ namespace Core.Entities
         public virtual DateTime TokenExpirationDate { get; set; } = DateTime.UtcNow.AddHours(.25);
         public virtual DateTime LastActive { get; set; } = DateTime.UtcNow;
         public virtual DateTime DateCreated { get; set; } = DateTime.UtcNow;
+        public virtual DateTime? DateDeleted { get; set; } = null;
     }
 }
