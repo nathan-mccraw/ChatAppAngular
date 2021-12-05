@@ -9,6 +9,7 @@ namespace Core.InputValidationModels
     public class IncomingMessageModel
     {
         public string Text { get; set; }
+        public int ChannelId { get; set; }
         public UserSessionModel User { get; set; }
         public DateTime DateCreated { get; set; }
     }

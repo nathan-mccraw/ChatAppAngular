@@ -49,8 +49,10 @@ namespace API
                 AppDomain.CurrentDomain.BaseDirectory,
                 "nhibernate.cfg.xml"
                 );
-
-            services.AddHibernate(path);
+            var connString = _configuration["ConnectionStrings:Default"];
+            var config = new NHibernate.Cfg.Configuration().Configure(path);
+            config.SetProperty(NHibernate.Cfg.Environment.ConnectionString, connString);
+            services.AddHibernate(config);
             services.AddControllers();
             services.AddSignalR();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

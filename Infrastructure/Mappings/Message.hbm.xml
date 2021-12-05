@@ -7,8 +7,9 @@
 			<generator class="native" />
 		</id>
 		<property name="Text" column = "text" />
+		<many-to-one name="User" class="UserEntity" column="user_id" />
+		<many-to-one name="Channel" class="ChannelEntity" column="channel_id" />
 		<property name="DateCreated" column ="date_created" />
 		<property name="DateDeleted" column="date_deleted" />
-		<many-to-one name="User" class="UserEntity" column ="user_id" />
 	</class>
 </hibernate-mapping>

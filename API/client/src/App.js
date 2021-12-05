@@ -13,6 +13,7 @@ import axios from "axios";
 const App = () => {
   const [userSession, setUserSession] = useState({
     id: "",
+    userId: "",
     userToken: "",
   });
 
@@ -42,10 +43,10 @@ const App = () => {
       .get("/api/signup")
       .then((response) => {
         setUserSession(response.data);
-        axios.get(`/api/users/${response.data.id}`).then((userResponse) => {
+        axios.get(`/api/users/${response.data.userId}`).then((userResponse) => {
           setUserProfile(userResponse.data);
+          navigate("/Chat");
         });
-        navigate("/Chat");
       })
       .catch((error) => {
         console.log(error.response);

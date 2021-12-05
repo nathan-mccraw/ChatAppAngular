@@ -18,7 +18,7 @@ const SignInPage = ({ setUserSession, setUserProfile, guestSignUp }) => {
       .post("/api/signin", signInFormState)
       .then((response) => {
         setUserSession(response.data);
-        axios.get(`/api/users/${response.data.id}`).then((userResponse) => {
+        axios.get(`/api/users/${response.data.userId}`).then((userResponse) => {
           setUserProfile(userResponse.data);
         });
         navigate("/Chat");

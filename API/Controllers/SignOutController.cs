@@ -15,27 +15,26 @@ namespace API.Controllers
     [ApiController]
     public class SignOutController : Controller
     {
-        private readonly IGenericRepository<UserEntity> _userRepo;
+        private readonly IGenericRepository<UserSessionEntity> _sessionRepo;
 
-        public SignOutController(IGenericRepository<UserEntity> usersRepo)
+        public SignOutController(IGenericRepository<UserSessionEntity> sessionRepo)
         {
-            _userRepo = usersRepo;
+            _sessionRepo = sessionRepo;
         }
 
         // PUT: SignOut
         [HttpPut]
         public ActionResult SignOutUser(UserSessionModel UserSession)
         {
-            var spec = new GetUserEntityByUserTokenSpec(UserSession.UserToken);
-            var storedUserEntity = _userRepo.GetEntityWithSpec(spec);
+            var storedUserSession = _sessionRepo.GetEntityByIdFromDB(UserSession.Id);
 
-            if (storedUserEntity == null || storedUserEntity.UserToken != UserSession.UserToken)
+            if (storedUserSession == null || storedUserSession.UserToken != UserSession.UserToken)
             {
                 return BadRequest("User session does not exist");
             }
 
-            storedUserEntity.TokenExpirationDate = DateTime.UtcNow;
-            _userRepo.UpdateEntityInDB(storedUserEntity);
+            storedUserSession.TokenExpirationDate = DateTime.UtcNow;
+            _sessionRepo.UpdateEntityInDB(storedUserSession);
             return Ok("Signed Out");
         }
 

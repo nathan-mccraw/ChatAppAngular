@@ -22,16 +22,22 @@ namespace API.Controllers
         private readonly IHubContext<ChatHub, IChatClient> _chatHub;
         private readonly IGenericRepository<MessageEntity> _messageRepo;
         private readonly IGenericRepository<UserEntity> _userRepo;
+        private readonly IGenericRepository<UserSessionEntity> _sessionRepo;
+        private readonly IGenericRepository<ChannelEntity> _channelRepo;
         private readonly IMapper _mapper;
 
         public MessagesController(IGenericRepository<MessageEntity> genRepo,
                                   IGenericRepository<UserEntity> userRepo,
+                                  IGenericRepository<UserSessionEntity> sessionRepo,
+                                  IGenericRepository<ChannelEntity> channelRepo,
                                   IHubContext<ChatHub,
                                   IChatClient> chatHub,
                                   IMapper mapper)
         {
             _messageRepo = genRepo;
             _userRepo = userRepo;
+            _sessionRepo = sessionRepo;
+            _channelRepo = channelRepo;
             _chatHub = chatHub;
             _mapper = mapper;
         }
@@ -57,27 +63,40 @@ namespace API.Controllers
         [HttpPost]
         public ActionResult PostMessage(IncomingMessageModel inputMessage)
         {
-            var spec = new GetUserEntityByUserTokenSpec(inputMessage.User.UserToken);
-            var storedUserEntity = _userRepo.GetEntityWithSpec(spec);
+            var storedUserEntity = _userRepo.GetEntityByIdFromDB(inputMessage.User.UserId);
+            var activeSessions = storedUserEntity.UserSessions.Where(session => session.isActive);
 
-            if (storedUserEntity == null || storedUserEntity.UserToken != inputMessage.User.UserToken)
+            if (storedUserEntity == null)
             {
                 return Unauthorized("Please signin to post a message");
             }
-            else if (storedUserEntity.TokenExpirationDate < DateTime.UtcNow)
+            else if (!activeSessions.Any())
             {
                 return Unauthorized("You have been signed out due to inactivity. Please sign back in to post a message.");
             }
 
-            if (storedUserEntity.UserToken == inputMessage.User.UserToken
-                && storedUserEntity.TokenExpirationDate > DateTime.UtcNow)
+            if (activeSessions.Where(session => session.UserToken == inputMessage.User.UserToken).Any())
             {
-                //update usersession with new expiration date
-                storedUserEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                storedUserEntity.LastActive = DateTime.UtcNow;
+                foreach (var sess in activeSessions)
+                {
+                    if (sess.Id != inputMessage.User.Id)
+                    {
+                        sess.TokenExpirationDate = DateTime.UtcNow;
+                        sess.LastActive = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        sess.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
+                        sess.LastActive = DateTime.UtcNow;
+                    }
+                    _sessionRepo.UpdateEntityInDB(sess);
+                }
+
+                //get ChannelEntity (put channel validation here)
+                var channel = _channelRepo.GetEntityByIdFromDB(inputMessage.ChannelId);
 
                 //make new messageEntity to post in DB
-                MessageEntity message = new() { Text = inputMessage.Text, User = storedUserEntity };
+                MessageEntity message = new() { Text = inputMessage.Text, Channel = channel, User = storedUserEntity };
 
                 //post message to DB
                 _messageRepo.AddEntityToDB(message);

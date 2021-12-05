@@ -5,17 +5,6 @@ const Footer = ({ userProfile, modalStates }) => {
   return (
     <div className="row mt4 justify-content-center align-items-baseline">
       <div className="col-auto p-0">sending message as:</div>
-      {/* <div className="col-auto p-0 h5 text-primary">
-        {userProfile.firstName !== "Guest" && (
-          <Link
-            to="/AccountSettings"
-            className="btn btn-sm btn-outline-primary border-0 m-2"
-          >
-            <i className="me-1 bi bi-person-lines-fill"></i>
-            {userProfile.username}
-          </Link>
-        )}
-      </div> */}
       {userProfile.firstName === "Guest" && (
         <div className="col-auto p-1">
           <div className="row align-items-center">

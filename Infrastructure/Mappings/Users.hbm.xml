@@ -11,9 +11,10 @@
 		<property name="Password" column ="password" />
 		<property name="FirstName" column ="first_name" />
 		<property name="LastName" column ="last_name" />
-		<property name="UserToken" column="user_token" />
-		<property name="TokenExpirationDate" column="token_expiration_date" />
-		<property name="LastActive" column="last_active" />
+		<bag name="UserSessions">
+			<key column="user_id" />
+			<one-to-many class="UserSessionEntity" />
+		</bag>
 		<property name="DateCreated" column ="date_created" />
 		<property name="DateDeleted" column ="date_deleted" />
 	</class>

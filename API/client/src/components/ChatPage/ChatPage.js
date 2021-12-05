@@ -30,25 +30,26 @@ const ChatPage = ({
       .build();
     setConnection(newConnection);
 
-    axios.get("/api/messages").then((response) => {
-      setMessageArray(response.data);
-    });
-
-    setTimeout(updateScroll, 1000);
+    axios
+      .get("/api/messages")
+      .then((response) => {
+        setMessageArray(response.data);
+      })
+      .then((_) => updateScroll());
   }, []);
 
   useEffect(() => {
     if (connection) {
       connection
         .start()
-        .then((result) => {
+        .then(() => {
           console.log("Good Connection");
           connection.on("ReceiveMessage", (message) => {
             console.log("receiving message");
             const updatedChat = [...latestChat.current];
             updatedChat.push(message);
             setMessageArray(updatedChat);
-            setTimeout(updateScroll, 500);
+            updateScroll();
           });
         })
         .catch((e) => console.log(e));
@@ -59,6 +60,7 @@ const ChatPage = ({
     e.preventDefault();
     const message = {
       text: chatMessage,
+      channelId: 1,
       user: userSession,
     };
 
@@ -93,7 +95,7 @@ const ChatPage = ({
         <div id="chatwindowcontainer" className="col p-0">
           <div id="chatwindow" className="col m-0">
             <TitleBar />
-            <ChatWindow messageArray={messageArray} />
+            <ChatWindow messageArray={messageArray} userProfile={userProfile} />
           </div>
           <div className="row m-0">
             <ChatInput

@@ -1,0 +1,66 @@
+create table user_sessions (
+	user_id INT,
+	user_token VARCHAR(40),
+	last_active DATE,
+	token_expiration_date DATE
+);
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (14, 'd0b6a49a-9907-4316-b27d-26d5e49e239d', '2021-03-30 06:10:31', '2021-03-30 06:25:31');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (20, 'd6764488-f603-4060-9900-83a8cc7ef8a0', '2020-12-12 01:22:53', '2020-12-12 01:37:53');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (24, '917b35e9-5aeb-411f-9d6c-414724c2e8cf', '2021-06-14 15:41:33', '2021-06-14 15:56:33');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (2, '93aeb7bd-b179-4efc-a793-3164352075d0', '2021-04-25 20:49:53', '2021-04-25 21:04:53');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (21, 'f6eda843-3298-4cde-a2a6-38d163c9b1b8', '2021-03-27 01:14:40', '2021-03-27 01:29:40');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (22, 'e1d1ae62-cbd4-4cc3-8f9f-9ff77eb66655', '2021-03-09 19:35:50', '2021-03-09 19:50:50');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (30, 'c9555656-8a0c-4dbc-a6a5-c17cc4c382d3', '2021-08-09 04:56:36', '2021-08-09 05:11:36');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (8, 'e3264593-5cfc-4262-bea8-61566ec52e60', '2021-09-27 01:46:46', '2021-09-27 02:01:46');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (15, 'd7f2637d-de52-4c96-9fc9-7c6f49db8925', '2021-09-10 17:07:42', '2021-09-10 17:22:42');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (17, 'e697f234-91bb-44ed-b7d7-6f2165b69bab', '2021-01-08 14:02:53', '2021-01-08 14:17:53');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (18, 'ef78440a-16a9-4d4f-858a-35158719d057', '2021-03-05 03:47:50', '2021-03-05 04:02:50');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (13, '9e939d0d-d796-4ae1-9c19-643ed92db323', '2021-07-13 19:33:28', '2021-07-13 19:48:28');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (11, '3b580334-38f7-471d-8f42-b8bbce0334f6', '2020-12-17 09:10:38', '2020-12-17 09:25:38');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (1, '0fb59a70-0ef7-4233-ae51-d7fecd0132d4', '2021-02-11 01:06:39', '2021-02-11 01:21:39');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (18, 'ba1468d9-7095-434d-8bc9-53a1b656274a', '2020-12-11 16:27:18', '2020-12-11 16:42:18');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (20, '24c288db-41c0-4e5f-9e96-7d1f3e66ab0f', '2021-09-19 19:44:37', '2021-09-19 19:59:37');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (11, '6f2b9ef2-e1fb-4f44-942a-dd3fae20b690', '2020-12-27 09:18:53', '2020-12-27 09:33:53');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (7, '853325c7-91ee-44e6-9f6f-2c0c0b431845', '2021-07-24 08:40:47', '2021-07-24 08:55:47');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (6, 'b3ad995d-7836-4ab5-a39f-6834541fc0ca', '2021-11-02 06:05:12', '2021-11-02 06:20:12');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (10, 'e37f3f18-4733-47b2-b47e-0dda6767f969', '2021-09-22 20:42:40', '2021-09-22 20:57:40');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (24, '85d2b7bc-65d1-4301-8680-7a02ae1da1d7', '2021-08-28 07:36:18', '2021-08-28 07:51:18');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (2, '8ba66b3d-7c97-48fb-b1b5-196bbc8aa88b', '2021-02-17 11:20:59', '2021-02-17 11:35:59');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (6, 'c3788561-bba6-4b31-a279-c02e65a53d3f', '2021-08-19 16:05:16', '2021-08-19 16:20:16');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, 'f7e87d76-dbcb-4f13-8145-17ae80b666d9', '2021-05-30 07:37:54', '2021-05-30 07:52:54');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (2, '56b6849f-362e-4e7e-9ba4-8770738dedfd', '2021-08-06 05:22:19', '2021-08-06 05:37:19');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, '6a292ef5-75a6-4199-9d5b-ea207d220499', '2021-10-30 19:31:20', '2021-10-30 19:46:20');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (1, '53b91a41-babe-4a9c-b57a-fe7e7de07ece', '2021-03-20 11:36:45', '2021-03-20 11:51:45');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (2, '3f83df19-f2f4-48df-8ab4-a9e9601f3312', '2021-10-01 00:02:50', '2021-10-01 00:17:50');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (12, '881597ab-e16c-4293-8fd9-42ae68094885', '2021-02-13 14:19:24', '2021-02-13 14:34:24');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (12, 'a7c0e9ef-d139-4f61-8182-8dcd45771cb4', '2021-09-22 16:03:28', '2021-09-22 16:18:28');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (11, '6983dc55-39fa-4354-9d3d-377ac9377778', '2021-07-10 23:50:50', '2021-07-11 00:05:50');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (10, '540959f4-f8c1-40bf-9450-4d40ecc47e6c', '2020-12-01 20:32:10', '2020-12-01 20:47:10');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (24, 'ee1e7386-5110-4773-8222-f384e02c4816', '2021-08-31 07:16:45', '2021-08-31 07:31:45');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (15, 'a3bda36f-3066-453f-9f38-4f3bf2610efa', '2021-11-14 11:03:26', '2021-11-14 11:18:26');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (17, '6f080a62-b0cd-4492-8256-183278786689', '2021-08-26 17:43:48', '2021-08-26 17:58:48');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (25, '7938e6f4-1ac3-4af9-a789-8eae72cae2c9', '2021-10-07 04:24:25', '2021-10-07 04:39:25');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, '6f1814e1-64aa-4182-84d6-4750f7dbd2f6', '2021-01-24 00:25:15', '2021-01-24 00:40:15');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (3, '2069cb10-c484-436f-96fd-d8f1377a9665', '2021-01-29 10:50:32', '2021-01-29 11:05:32');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (25, '8c9dc541-aa07-4cfe-96cd-40c7cc5e3cb6', '2021-09-20 13:29:00', '2021-09-20 13:44:00');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, '0c89d443-565e-4c67-a1c5-8f08848cd2c2', '2021-11-13 17:02:18', '2021-11-13 17:17:18');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (29, 'f77a5cdc-9525-4694-a899-39d8f16a0b4c', '2021-11-14 07:49:17', '2021-11-14 08:04:17');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (9, '76602bcc-25ec-4c2d-a1b6-f48833124467', '2021-07-02 06:32:01', '2021-07-02 06:47:01');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, '7041aa16-68d9-4a04-b52e-8323cef378e2', '2021-07-25 05:46:29', '2021-07-25 06:01:29');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (26, 'dd3efcd4-6a14-4eea-8aaf-6068ae6ff81f', '2021-01-06 19:00:24', '2021-01-06 19:15:24');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (19, '477d2c5a-18ae-4ff3-9be5-3a467fcee599', '2021-07-31 08:14:46', '2021-07-31 08:29:46');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (26, '8ca13eaa-80d6-4ecd-8e4d-d9a1bc9b8adc', '2021-02-24 09:30:55', '2021-02-24 09:45:55');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (5, '339b5c76-ea1b-4ea4-beb2-3e9b8e0355e2', '2021-10-10 12:05:15', '2021-10-10 12:20:15');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (20, '1f4dc48c-e2b3-41ba-9a10-7789cba71807', '2021-12-03 16:15:39', '2021-12-03 16:30:39');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (19, 'ec2021db-4a7d-4efd-b07c-1b4bff73cb95', '2021-10-31 17:44:16', '2021-10-31 17:59:16');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (30, '79926b2f-3990-4e21-9b1c-96e1a9904e7c', '2021-07-04 22:30:03', '2021-07-04 22:45:03');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (6, '7c96175a-77d9-4b44-b4b6-24d6c8c2cdab', '2021-01-02 07:36:18', '2021-01-02 07:51:18');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (13, '69d2cbb8-11b2-4b05-9636-911de7a61b6f', '2021-07-25 12:14:32', '2021-07-25 12:29:32');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (22, '38d95f38-6cd2-4280-9026-925e90dadcc1', '2021-10-25 15:21:10', '2021-10-25 15:36:10');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, '27f49122-59aa-4177-9ead-314991521510', '2020-12-18 02:05:45', '2020-12-18 02:20:45');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (23, 'e4ba29d5-d1d8-4d7c-9e96-648d6579bfa4', '2021-02-05 16:35:50', '2021-02-05 16:50:50');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (28, 'c344cd2d-69a8-4d05-829f-db2ad5ba2218', '2021-05-28 11:44:27', '2021-05-28 11:59:27');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (11, 'fe04ad5b-b6c8-492f-9f13-049898a16995', '2021-03-18 01:17:04', '2021-03-18 01:32:04');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (24, 'a13d3daa-443a-4c75-bc69-e1806cba1865', '2021-06-20 07:45:29', '2021-06-20 08:00:29');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (24, 'b5f44956-e437-4bb4-9e99-6fa3f09dd21d', '2020-12-22 13:02:49', '2020-12-22 13:17:49');
+insert into user_sessions (user_id, user_token, last_active, token_expiration_date) values (29, '7f9faec8-cb83-4ba3-9109-9753813c290f', '2021-07-07 01:32:04', '2021-07-07 01:47:04');

@@ -1,6 +1,6 @@
 ﻿import React from "react";
 
-const Message = ({ message, messageArray }) => {
+const Message = ({ message, messageArray, userProfile }) => {
   let isNotSameDate = true;
   let index = messageArray.indexOf(message);
   let currentDate = new Date(message.dateCreated);
@@ -27,13 +27,33 @@ const Message = ({ message, messageArray }) => {
           </div>
         </div>
       )}
-      <div className="col-auto ms-4">{message.username}: </div>
-      <div className="col text-light bg-info me-1 ms-1 p-1 ps-2 pe-3 shadow border border-dark rounded">
-        {message.text}
-      </div>
-      <div className="col-auto fw-lighter" style={{ letterSpacing: ".15rem" }}>
-        {currentDate.toLocaleTimeString()}
-      </div>
+      {message.userId !== userProfile.id ? (
+        <div className="row">
+          <div className="col-auto">{message.username}: </div>
+          <div className="col-6 text-light bg-info me-4 ms-1 p-1 ps-2 pe-3 shadow border border-dark rounded">
+            {message.text}
+          </div>
+          <div
+            className="col-auto fw-lighter"
+            style={{ letterSpacing: ".15rem" }}
+          >
+            {currentDate.toLocaleTimeString()}
+          </div>
+        </div>
+      ) : (
+        <div className="row justify-content-end">
+          <div
+            className="col-auto fw-lighter"
+            style={{ letterSpacing: ".15rem" }}
+          >
+            {currentDate.toLocaleTimeString()}
+          </div>
+          <div className="col-6 text-light bg-success me-1 ms-4 p-1 ps-3 pe-2 shadow border border-dark rounded">
+            {message.text}
+          </div>
+          <div className="col-auto">: {message.username}</div>
+        </div>
+      )}
     </div>
   );
 };

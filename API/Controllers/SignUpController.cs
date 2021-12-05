@@ -12,11 +12,13 @@ namespace API.Controllers
     public class SignUpController : ControllerBase
     {
         private readonly IGenericRepository<UserEntity> _userRepo;
+        private readonly IGenericRepository<UserSessionEntity> _sessionRepo;
         private readonly IMapper _mapper;
 
-        public SignUpController(IGenericRepository<UserEntity> userRepository, IMapper mapper)
+        public SignUpController(IGenericRepository<UserEntity> userRepository, IGenericRepository<UserSessionEntity> sessionRepo, IMapper mapper)
         {
             _userRepo = userRepository;
+            _sessionRepo = sessionRepo;
             _mapper = mapper;
         }
 
@@ -33,7 +35,12 @@ namespace API.Controllers
             else
             {
                 var newUser = _userRepo.AddEntityToDB(userAttempt);
-                var userSession = _mapper.Map<UserEntity, UserSessionModel>(newUser);
+                var newSession = new UserSessionEntity()
+                {
+                    UserId = newUser.Id
+                };
+                newSession = _sessionRepo.AddEntityToDB(newSession);
+                var userSession = _mapper.Map<UserSessionEntity, UserSessionModel>(newSession);
 
                 return Ok(userSession);
             }
@@ -51,11 +58,17 @@ namespace API.Controllers
                 LastName = "Guest",
             };
             _userRepo.AddEntityToDB(newGuest);
-            var spec = new GetUserEntityByUserTokenSpec(newGuest.UserToken);
+            var spec = new GetUserEntityByUsernameSpec(newGuest.Username);
             var updatedUser = _userRepo.GetEntityWithSpec(spec);
             updatedUser.Username = "Guest" + updatedUser.Id;
             _userRepo.UpdateEntityInDB(updatedUser);
-            var userSession = _mapper.Map<UserEntity, UserSessionModel>(updatedUser);
+
+            var newSession = new UserSessionEntity()
+            {
+                UserId = updatedUser.Id
+            };
+            newSession = _sessionRepo.AddEntityToDB(newSession);
+            var userSession = _mapper.Map<UserSessionEntity, UserSessionModel>(newSession);
 
             return Ok(userSession);
         }

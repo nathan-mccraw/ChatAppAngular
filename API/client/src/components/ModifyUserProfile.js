@@ -44,7 +44,7 @@ const ModifyUserProfile = ({
       .put("/api/signin", modifyUserFormState)
       .then((response) => {
         setUserSession(response.data);
-        axios.get(`/api/users/${response.data.id}`).then((userResponse) => {
+        axios.get(`/api/users/${response.data.userId}`).then((userResponse) => {
           setUserProfile(userResponse.data);
           setModifyUserFormState({
             user: userSession,

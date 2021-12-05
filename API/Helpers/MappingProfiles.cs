@@ -15,11 +15,17 @@ namespace API.Helpers
         {
             CreateMap<MessageEntity, MessageModel>()
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))
-                .ForMember(d => d.Username, o => o.MapFrom(s => s.User.Username));
+                .ForMember(d => d.Username, o => o.MapFrom(s => s.User.Username))
+                .ForMember(d => d.ChannelId, o => o.MapFrom(s => s.Channel.Id));
 
-            CreateMap<UserEntity, UserModel>();
+            CreateMap<UserEntity, UserModel>()
+                .ForMember(d => d.LastActive, o => o.MapFrom(s => s.UserSessions.OrderByDescending(x => x.LastActive).FirstOrDefault().LastActive));
 
-            CreateMap<UserEntity, UserSessionModel>();
+            CreateMap<UserEntity, UserSessionModel>()
+                .ForMember(d => d.UserToken, o => o.MapFrom(s => s.UserSessions.OrderByDescending(x => x.LastActive).FirstOrDefault().UserToken))
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.UserSessions.OrderByDescending(x => x.LastActive).FirstOrDefault().Id));
+
+            CreateMap<UserSessionEntity, UserSessionModel>();
 
             //CreateMap<UserSessionEntity, UserSessionModel>()
             //    .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))

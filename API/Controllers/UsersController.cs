@@ -2,6 +2,7 @@
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,8 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<UserModel>> GetUsers()
         {
-            var users = _repo.GetAllEntitiesFromDB();
+            var spec = new GetUsersDropDeletedUsers();
+            var users = _repo.GetEntitiesWithSpec(spec);
             return Ok(_mapper.Map<IReadOnlyList<UserEntity>, IReadOnlyList<UserModel>>(users));
         }
 
@@ -40,12 +42,5 @@ namespace API.Controllers
             var user = _repo.GetEntityByIdFromDB(id);
             return Ok(_mapper.Map<UserEntity, UserModel>(user));
         }
-
-        // POST: api/<UsersController>
-        //[HttpPost]
-        //public void Post(UserEntity user)
-        //{
-        //    _repo.AddEntityToDB(user);
-        //}
     }
 }
