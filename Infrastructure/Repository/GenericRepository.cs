@@ -18,7 +18,7 @@ namespace Infrastructure.Repository
 
         public TEntity AddEntityToDB(TEntity entity)
         {
-            _session.Save(entity);
+            entity.Id = (int)_session.Save(entity);
             return entity;
         }
 

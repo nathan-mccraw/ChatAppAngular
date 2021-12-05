@@ -10,7 +10,7 @@ namespace Core.InputValidationModels
     {
         public string Text { get; set; }
         public int ChannelId { get; set; }
-        public UserSessionModel User { get; set; }
+        public UserSessionModel UserSession { get; set; }
         public DateTime DateCreated { get; set; }
     }
 }

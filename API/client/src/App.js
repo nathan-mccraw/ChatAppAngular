@@ -15,6 +15,7 @@ const App = () => {
     id: "",
     userId: "",
     userToken: "",
+    hasOtherActiveSessions: false,
   });
 
   const [userProfile, setUserProfile] = useState({
@@ -67,7 +68,11 @@ const App = () => {
       .then((_) => {
         setUserSession({
           id: "",
-          userToken: "",
+          username: "",
+          firstName: "",
+          lastName: "",
+          lastActive: "",
+          DateCreated: "",
         });
       })
       .catch((error) => {

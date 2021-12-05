@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
-	  <None Remove="Mappings\Channel.hbm.xml" />
-	  <None Remove="Mappings\Message.hbm.xml" />
-	  <None Remove="Mappings\Users.hbm.xml" />
-	  <None Remove="Mappings\UserSession.hbm.xml" />
+	  <None Remove="NHibernateMappings\Channel.hbm.xml" />
+	  <None Remove="NHibernateMappings\Message.hbm.xml" />
+	  <None Remove="NHibernateMappings\Users.hbm.xml" />
+	  <None Remove="NHibernateMappings\UserSession.hbm.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Mappings\Channel.hbm.xml" />
-	  <EmbeddedResource Include="Mappings\Message.hbm.xml" />
-	  <EmbeddedResource Include="Mappings\Users.hbm.xml">
+	  <EmbeddedResource Include="NHibernateMappings\Channel.hbm.xml" />
+	  <EmbeddedResource Include="NHibernateMappings\Message.hbm.xml" />
+	  <EmbeddedResource Include="NHibernateMappings\Users.hbm.xml">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </EmbeddedResource>
-	  <EmbeddedResource Include="Mappings\UserSession.hbm.xml" />
+	  <EmbeddedResource Include="NHibernateMappings\UserSession.hbm.xml" />
 	</ItemGroup>
 
 	<ItemGroup>

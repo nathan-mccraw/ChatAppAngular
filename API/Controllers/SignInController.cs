@@ -1,14 +1,8 @@
-﻿using AutoMapper;
-using Core.DTOs;
-using Core.Entities;
+﻿using Core.DTOs;
 using Core.InputValidationModels;
 using Core.Interfaces;
-using Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,135 +12,65 @@ namespace API.Controllers
     [ApiController]
     public class SignInController : ControllerBase
     {
-        private readonly IGenericRepository<UserEntity> _userRepo;
-        private readonly IGenericRepository<UserSessionEntity> _sessionRepo;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IUserSessionService _userSessionService;
 
-        public SignInController(IGenericRepository<UserEntity> userRepository,
-                                IGenericRepository<UserSessionEntity> sessionRepo,
-                                IMapper mapper)
+        public SignInController(IUserService userService, IUserSessionService userSessionService)
         {
-            _userRepo = userRepository;
-            _sessionRepo = sessionRepo;
-            _mapper = mapper;
+            _userService = userService;
+            _userSessionService = userSessionService;
         }
 
         // POST api/SignIn
         [HttpPost]
-        public ActionResult<UserSessionModel> SignInUser([FromBody] SignInModel userAttempt)
+        public ActionResult<UserSessionModel> SignInUser([FromBody] IncomingSignInModel clientUser)
         {
-            var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            var storedUserEntity = _userRepo.GetEntityWithSpec(specs);
-            if (storedUserEntity == null || storedUserEntity.Password != userAttempt.Password)
+            try
             {
-                return Unauthorized("The combination of entered Username and password is not valid");
-            }
-            else if (storedUserEntity.DateDeleted != null)
-            {
-                return BadRequest("This profile has been deleted.");
-            }
-            else if (storedUserEntity.UserSessions.Where(x => x.isActive == true).Any())
-            {
-                var activeSessions = storedUserEntity.UserSessions.Where(x => x.isActive);
-                foreach (var sess in activeSessions)
-                {
-                    sess.TokenExpirationDate = DateTime.UtcNow;
-                    _sessionRepo.UpdateEntityInDB(sess);
-                }
-            }
+                var user = _userService.ValidateSignIn(clientUser);
+                var newSession = _userSessionService.CreateUserSession(user.Id);
+                newSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(user.Id);
 
-            var newSession = new UserSessionEntity()
+                return Ok(newSession);
+            }
+            catch (Exception ex)
             {
-                UserId = storedUserEntity.Id
-            };
-            newSession = _sessionRepo.AddEntityToDB(newSession);
-            var userSession = _mapper.Map<UserSessionEntity, UserSessionModel>(newSession);
-
-            return Ok(userSession);
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<SignIn>
         [HttpPut]
-        public ActionResult<UserSessionModel> EditUserEntity([FromBody] IncomingUserProfile userAttempt)
+        public ActionResult<UserSessionModel> EditUserEntity([FromBody] IncomingUserProfileModel clientUser)
         {
-            var storedUserEntity = _userRepo.GetEntityByIdFromDB(userAttempt.User.UserId);
-            if (storedUserEntity == null || storedUserEntity.Password != userAttempt.Password)
+            if (_userSessionService.IsValidSession(clientUser.UserSession) == false)
             {
-                return Unauthorized("The combination of entered Username and password is not valid");
+                return Unauthorized("Please signin and try again");
             }
-            else if (storedUserEntity.DateDeleted != null)
+            else if (_userService.IsUserDeleted(clientUser.UserSession.UserId))
             {
-                return BadRequest("This account has been deleted");
+                return Unauthorized("This account have been deleted");
             }
-
-            if (userAttempt.Username != null)
+            else if (clientUser.Username != null && _userService.DoesUsernameExist(clientUser.Username))
             {
-                var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-                if (_userRepo.GetEntityWithSpec(specs) != null)
-                {
-                    return BadRequest("Username already exists. Please choose another new username");
-                }
-
-                storedUserEntity.Username = userAttempt.Username;
+                return BadRequest("Username already exists. Please choose another new username");
             }
 
-            if (userAttempt.FirstName != "")
-            {
-                storedUserEntity.FirstName = userAttempt.FirstName;
-            }
-
-            if (userAttempt.LastName != "")
-            {
-                storedUserEntity.LastName = userAttempt.LastName;
-            }
-
-            _userRepo.UpdateEntityInDB(storedUserEntity);
-
-            var storedSessionEntity = _sessionRepo.GetEntityByIdFromDB(userAttempt.User.Id);
-            if (storedSessionEntity.isActive)
-            {
-                storedSessionEntity.LastActive = DateTime.UtcNow;
-                storedSessionEntity.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
-                _sessionRepo.UpdateEntityInDB(storedSessionEntity);
-                return Ok(_mapper.Map<UserSessionEntity, UserSessionModel>(storedSessionEntity));
-            }
-            else
-            {
-                var newSession = new UserSessionEntity()
-                {
-                    UserId = storedUserEntity.Id
-                };
-                newSession = _sessionRepo.AddEntityToDB(newSession);
-                var userSession = _mapper.Map<UserSessionEntity, UserSessionModel>(newSession);
-
-                return Ok(userSession);
-            }
+            _userService.UpdateUserProfile(clientUser);
+            var updatedSession = _userSessionService.UpdateSession(clientUser.UserSession);
+            updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(clientUser.UserSession.UserId);
+            return (updatedSession);
         }
 
         // DELETE api/SignIn/5
         [HttpDelete]
-        public ActionResult Delete(SignInModel userAttempt)
+        public ActionResult Delete(IncomingSignInModel clientUser)
         {
-            var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            var storedUserEntity = _userRepo.GetEntityWithSpec(specs);
-
-            if (storedUserEntity == null || storedUserEntity.Password != userAttempt.Password)
-            {
-                return Unauthorized("The combination of entered Username and password is not valid");
-            }
-
             try
             {
-                var activeSessions = storedUserEntity.UserSessions.Where(x => x.isActive);
-                foreach (var sess in activeSessions)
-                {
-                    sess.TokenExpirationDate = DateTime.UtcNow;
-                    _sessionRepo.UpdateEntityInDB(sess);
-                }
+                var user = _userService.ValidateSignIn(clientUser);
+                _userService.DeleteUser(user.Id);
 
-                storedUserEntity.DateDeleted = DateTime.Now;
-                storedUserEntity.Password = new Guid().ToString();
-                _userRepo.UpdateEntityInDB(storedUserEntity);
                 return Ok();
             }
             catch (Exception ex)

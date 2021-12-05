@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Core.DTOs;
-using Core.Entities;
+﻿using Core.DTOs;
+using Core.InputValidationModels;
 using Core.Interfaces;
-using Infrastructure.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -11,36 +9,29 @@ namespace API.Controllers
     [ApiController]
     public class SignUpController : ControllerBase
     {
-        private readonly IGenericRepository<UserEntity> _userRepo;
-        private readonly IGenericRepository<UserSessionEntity> _sessionRepo;
-        private readonly IMapper _mapper;
+        private readonly IUserSessionService _userSessService;
+        private readonly IUserService _userService;
 
-        public SignUpController(IGenericRepository<UserEntity> userRepository, IGenericRepository<UserSessionEntity> sessionRepo, IMapper mapper)
+        public SignUpController(IUserSessionService userSessService,
+                                IUserService userService)
         {
-            _userRepo = userRepository;
-            _sessionRepo = sessionRepo;
-            _mapper = mapper;
+            _userSessService = userSessService;
+            _userService = userService;
         }
 
         //POST api/SignUp
         [HttpPost]
-        public ActionResult<UserSessionModel> SignUpNewUser(UserEntity userAttempt)
+        public ActionResult<UserSessionModel> SignUpNewUser(IncomingNewUserModel clientUser)
         {
             //If username already exists in db then return error
-            var specs = new GetUserEntityByUsernameSpec(userAttempt.Username);
-            if (_userRepo.GetEntityWithSpec(specs) != null)
+            if (_userService.DoesUsernameExist(clientUser.Username))
             {
                 return BadRequest("Username Already Exists");
             }
             else
             {
-                var newUser = _userRepo.AddEntityToDB(userAttempt);
-                var newSession = new UserSessionEntity()
-                {
-                    UserId = newUser.Id
-                };
-                newSession = _sessionRepo.AddEntityToDB(newSession);
-                var userSession = _mapper.Map<UserSessionEntity, UserSessionModel>(newSession);
+                var newUser = _userService.CreateNewUser(clientUser);
+                var userSession = _userSessService.CreateUserSession(newUser.Id);
 
                 return Ok(userSession);
             }
@@ -50,27 +41,10 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult<UserSessionModel> SignUpGuest()
         {
-            var newGuest = new UserEntity
-            {
-                Username = "Guest",
-                Password = "guest",
-                FirstName = "Guest",
-                LastName = "Guest",
-            };
-            _userRepo.AddEntityToDB(newGuest);
-            var spec = new GetUserEntityByUsernameSpec(newGuest.Username);
-            var updatedUser = _userRepo.GetEntityWithSpec(spec);
-            updatedUser.Username = "Guest" + updatedUser.Id;
-            _userRepo.UpdateEntityInDB(updatedUser);
+            var newGuest = _userService.CreateNewGuest();
+            var newSession = _userSessService.CreateUserSession(newGuest.Id);
 
-            var newSession = new UserSessionEntity()
-            {
-                UserId = updatedUser.Id
-            };
-            newSession = _sessionRepo.AddEntityToDB(newSession);
-            var userSession = _mapper.Map<UserSessionEntity, UserSessionModel>(newSession);
-
-            return Ok(userSession);
+            return Ok(newSession);
         }
     }
 }

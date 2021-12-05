@@ -10,5 +10,6 @@ namespace Core.DTOs
         public int Id { get; set; }
         public int UserId { get; set; }
         public Guid UserToken { get; set; }
+        public bool HasOtherActiveSessions { get; set; } = false;
     }
 }

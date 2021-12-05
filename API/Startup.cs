@@ -13,6 +13,7 @@ using Core.Interfaces;
 using Infrastructure.Repository;
 using AutoMapper;
 using API.Helpers;
+using Core.Services;
 
 namespace API
 {
@@ -56,6 +57,9 @@ namespace API
             services.AddControllers();
             services.AddSignalR();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUserSessionService, UserSessionService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService, MessageService>();
             services.AddSpaStaticFiles(config =>
                 config.RootPath = "client/build");
 

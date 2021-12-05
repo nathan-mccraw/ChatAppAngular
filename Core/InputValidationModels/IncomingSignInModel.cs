@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Core.InputValidationModels
 {
-    public class SignInModel
+    public class IncomingSignInModel
     {
         public string Username { get; set; }
         public string Password { get; set; }

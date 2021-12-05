@@ -61,7 +61,7 @@ const ChatPage = ({
     const message = {
       text: chatMessage,
       channelId: 1,
-      user: userSession,
+      userSession: userSession,
     };
 
     if (connection.connectionStarted) {

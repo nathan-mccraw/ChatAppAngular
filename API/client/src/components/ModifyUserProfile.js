@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
-import DeleteUserModal from "./DeleteUsereModal";
+import DeleteUserModal from "./DeleteUserModal";
 
 const ModifyUserProfile = ({
   userProfile,
@@ -23,7 +23,7 @@ const ModifyUserProfile = ({
   });
 
   const [modifyUserFormState, setModifyUserFormState] = useState({
-    user: userSession,
+    userSession: userSession,
     username: "",
     password: "",
     confirmPassword: "",
@@ -47,7 +47,7 @@ const ModifyUserProfile = ({
         axios.get(`/api/users/${response.data.userId}`).then((userResponse) => {
           setUserProfile(userResponse.data);
           setModifyUserFormState({
-            user: userSession,
+            userSession: userSession,
             username: "",
             password: "",
             confirmPassword: "",
