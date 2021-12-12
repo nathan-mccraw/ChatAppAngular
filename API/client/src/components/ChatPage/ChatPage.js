@@ -1,27 +1,24 @@
 ﻿import React from "react";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import * as signalR from "@microsoft/signalr";
 import FriendsSideBar from "./FriendsList/FriendsSideBar";
 import ChatInput from "./ChatInput";
 import ChatWindow from "./ChatWindow/ChatWindow";
 import Footer from "./Footer";
 import TitleBar from "./TitleBar";
-import { useNavigate } from "react-router";
+import { useAuthContext } from "../../Hooks/useAuthContext";
 
-const ChatPage = ({
-  userProfile,
-  userSession,
-  setUserSession,
-  modalStates,
-  signOut,
-}) => {
+const ChatPage = ({ modalStates, signOut }) => {
   const [connection, setConnection] = useState(null);
   const [messageArray, setMessageArray] = useState("");
   const [chatMessage, setChatMessage] = useState("");
+
   const latestChat = useRef(null);
   latestChat.current = messageArray;
   const navigate = useNavigate();
+  const { userSession } = useAuthContext();
 
   useEffect(() => {
     const newConnection = new signalR.HubConnectionBuilder()
@@ -95,7 +92,7 @@ const ChatPage = ({
         <div id="chatwindowcontainer" className="col p-0">
           <div id="chatwindow" className="col m-0">
             <TitleBar />
-            <ChatWindow messageArray={messageArray} userProfile={userProfile} />
+            <ChatWindow messageArray={messageArray} />
           </div>
           <div className="row m-0">
             <ChatInput
@@ -103,7 +100,7 @@ const ChatPage = ({
               chatMessage={chatMessage}
               setChatMessage={setChatMessage}
             />
-            <Footer userProfile={userProfile} modalStates={modalStates} />
+            <Footer modalStates={modalStates} />
           </div>
         </div>
       </div>

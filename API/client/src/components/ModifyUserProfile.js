@@ -1,17 +1,12 @@
-﻿import axios from "axios";
-import React from "react";
+﻿import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import DeleteUserModal from "./DeleteUserModal";
+import { useAuthContext } from "../Hooks/useAuthContext";
+import { useModifyUserProfile } from "../Hooks/useModifyUserProfile";
 
-const ModifyUserProfile = ({
-  userProfile,
-  setUserProfile,
-  userSession,
-  setUserSession,
-  signOut,
-}) => {
+const ModifyUserProfile = ({ logOff }) => {
   const [modalStates, setModalStates] = useState({
     isDeleteUserOpen: false,
     showDeleteUserModal: function () {
@@ -31,6 +26,9 @@ const ModifyUserProfile = ({
     lastName: "",
   });
 
+  const { userSession, userProfile } = useAuthContext();
+  const { modifyUser } = useModifyUserProfile();
+
   const modifyUserFormChange = (e) => {
     setModifyUserFormState({
       ...modifyUserFormState,
@@ -38,28 +36,17 @@ const ModifyUserProfile = ({
     });
   };
 
-  const submitUserChanges = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .put("/api/signin", modifyUserFormState)
-      .then((response) => {
-        setUserSession(response.data);
-        axios.get(`/api/users/${response.data.userId}`).then((userResponse) => {
-          setUserProfile(userResponse.data);
-          setModifyUserFormState({
-            userSession: userSession,
-            username: "",
-            password: "",
-            confirmPassword: "",
-            firstName: "",
-            lastName: "",
-          });
-        });
-        alert("User profile updated!");
-      })
-      .catch((error) => {
-        alert(error.response.data);
-      });
+    modifyUser(modifyUserFormState);
+    setModifyUserFormState({
+      userSession: userSession,
+      username: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+    });
   };
 
   return (
@@ -71,7 +58,7 @@ const ModifyUserProfile = ({
         id="ModifyUserFormBox"
         className="col-auto bg-secondary border border-dark border-1 p-4"
         action="submit"
-        onSubmit={submitUserChanges}
+        onSubmit={handleSubmit}
       >
         <div className="row">
           <div className="input-group mb-3">
@@ -174,7 +161,7 @@ const ModifyUserProfile = ({
         </Modal.Header>
         <Modal.Body>
           <DeleteUserModal
-            signOut={signOut}
+            logOff={logOff}
             hideDeleteUserModal={modalStates.hideDeleteUserModal}
           />
         </Modal.Body>

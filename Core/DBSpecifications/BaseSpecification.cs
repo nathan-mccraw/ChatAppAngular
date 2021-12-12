@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Specifications
+namespace Core.DBSpecifications
 {
     public class BaseSpecification<T> : ISpecification<T>
     {

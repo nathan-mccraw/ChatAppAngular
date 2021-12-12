@@ -1,18 +1,24 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import "bootstrap/dist/css/bootstrap.css";
+import React from "react";
+import { CookiesProvider } from "react-cookie";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import registerServiceWorker from "./registerServiceWorker";
+import { AuthContextProvider } from "./Authentication/authContext";
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const rootElement = document.getElementById('root');
+const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
+const rootElement = document.getElementById("root");
 
 ReactDOM.render(
   <BrowserRouter basename={baseUrl}>
-    <App />
+    <CookiesProvider>
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
+    </CookiesProvider>
   </BrowserRouter>,
-  rootElement);
+  rootElement
+);
 
 registerServiceWorker();
-

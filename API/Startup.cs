@@ -14,6 +14,9 @@ using Infrastructure.Repository;
 using AutoMapper;
 using API.Helpers;
 using Core.Services;
+using API.Authentication;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace API
 {
@@ -39,12 +42,30 @@ namespace API
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            string JwtSecret = _configuration["JwtSecret"];
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            })
+                .AddJwtBearer("JwtBearer", JwtBearerOptions =>
                 {
-                    options.Audience = _configuration["AAD:ResourceId"];
-                    options.Authority = $"{_configuration["AAD:InstanceId"]}{_configuration["AAD:TentantId"]}";
+                    JwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSecret)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(5)
+                    };
                 });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.Audience = _configuration["AAD:ResourceId"];
+            //        options.Authority = $"{_configuration["AAD:InstanceId"]}{_configuration["AAD:TentantId"]}";
+            //    });
 
             var path = System.IO.Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
@@ -60,6 +81,7 @@ namespace API
             services.AddScoped<IUserSessionService, UserSessionService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddSpaStaticFiles(config =>
                 config.RootPath = "client/build");
 
@@ -82,6 +104,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

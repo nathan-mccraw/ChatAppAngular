@@ -1,10 +1,9 @@
-﻿using API.Hub;
-using AutoMapper;
+﻿using API.Authentication;
+using API.Hub;
 using Core.DTOs;
-using Core.Entities;
 using Core.InputValidationModels;
 using Core.Interfaces;
-using Infrastructure.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -14,51 +13,45 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MessagesController : ControllerBase
     {
         private readonly IHubContext<ChatHub, IChatClient> _chatHub;
-        private readonly IGenericRepository<MessageEntity> _messageRepo;
         private readonly IUserService _userService;
         private readonly IUserSessionService _userSessionService;
         private readonly IMessageService _messageService;
-        private readonly IMapper _mapper;
+        private readonly IJwtGenerator _jwtGen;
 
-        public MessagesController(IGenericRepository<MessageEntity> genRepo,
-                                  IUserService userService,
+        public MessagesController(IUserService userService,
                                   IUserSessionService userSessionService,
                                   IMessageService messageService,
-                                  IHubContext<ChatHub,
-                                  IChatClient> chatHub,
-                                  IMapper mapper)
+                                  IHubContext<ChatHub, IChatClient> chatHub,
+                                  IJwtGenerator jwtGen)
         {
-            _messageRepo = genRepo;
             _userService = userService;
             _userSessionService = userSessionService;
             _messageService = messageService;
             _chatHub = chatHub;
-            _mapper = mapper;
+            _jwtGen = jwtGen;
         }
 
-        // GET: api/messages
-        [HttpGet]
-        public ActionResult<IReadOnlyList<MessageModel>> GetMessages()
+        //GET api/Messages/channelName
+        [HttpGet("{channelName}")]
+        public ActionResult<IReadOnlyList<MessageModel>> GetMessagesNotDeletedByChannel(string channelName)
         {
-            var spec = new GetMessagesNotDeleted();
-            var messages = _messageRepo.GetEntitiesWithSpec(spec);
-            return Ok(_mapper.Map<IReadOnlyList<MessageEntity>, IReadOnlyList<MessageModel>>(messages));
-        }
-
-        // GET api/Messages/5
-        [HttpGet("{id}")]
-        public ActionResult<MessageModel> GetMessageById(int id)
-        {
-            var message = _messageRepo.GetEntityByIdFromDB(id);
-            return Ok(_mapper.Map<MessageEntity, MessageModel>(message));
+            try
+            {
+                return Ok(_messageService.GetMessagesNotDeletedByChannel(channelName));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //POST api/Messages
         [HttpPost]
-        public ActionResult PostMessage(IncomingMessageModel inputMessage)
+        public ActionResult<UserSessionModel> PostMessage(IncomingMessageModel inputMessage)
         {
             if (_userSessionService.IsValidSession(inputMessage.UserSession) == false)
             {
@@ -78,19 +71,29 @@ namespace API.Controllers
             //broadcast to other clients a new message has been posted
             _chatHub.Clients.All.ReceiveMessage(outgoingMessage);
 
-            return Ok();
+            return Ok(_jwtGen.GenerateToken(updatedSession));
         }
 
         // DELETE api/Messages/5
         [HttpDelete("{id}")]
-        public ActionResult DeleteMessage(int id)
+        public ActionResult<UserSessionModel> DeleteMessage([FromBody] MessageModel clientMessage, [FromHeader] UserSessionModel clientSession)
         {
+            if (_userSessionService.IsValidSession(clientSession) == false)
+            {
+                return Unauthorized("Please signin and try again");
+            }
+            else if (_userService.IsUserDeleted(clientSession.UserId))
+            {
+                return Unauthorized("This account have been deleted");
+            }
+
+            var updatedSession = _userSessionService.UpdateSession(clientSession);
+            updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(clientSession.UserId);
+
             try
             {
-                var message = _messageRepo.GetEntityByIdFromDB(id);
-                message.DateDeleted = DateTime.Now;
-                _messageRepo.UpdateEntityInDB(message);
-                return Ok();
+                _messageService.DeleteMessage(clientMessage.Id);
+                return Ok(_jwtGen.GenerateToken(updatedSession));
             }
             catch (Exception ex)
             {

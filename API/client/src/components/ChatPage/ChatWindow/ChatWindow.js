@@ -1,7 +1,7 @@
 import React from "react";
 import Message from "./Message";
 
-const ChatWindow = ({ messageArray, userProfile }) => {
+const ChatWindow = ({ messageArray }) => {
   return (
     <div
       id="chatRoom"
@@ -14,7 +14,6 @@ const ChatWindow = ({ messageArray, userProfile }) => {
               key={message.id.toString()}
               message={message}
               messageArray={messageArray}
-              userProfile={userProfile}
             />
           ))}
       </div>

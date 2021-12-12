@@ -1,32 +1,28 @@
-﻿import React from "react";
-import axios from "axios";
-import { useState } from "react";
+﻿import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useAuthContext } from "../Hooks/useAuthContext";
+import { useLogIn } from "./../Hooks/useLogIn";
 
-const SignInPage = ({ setUserSession, setUserProfile, guestSignUp }) => {
+const SignInPage = ({ guestSignUp }) => {
   const [signInFormState, setSignInFormState] = useState({
     username: "",
     password: "",
   });
 
+  const { isAuthed } = useAuthContext();
+  const { logIn } = useLogIn();
+
   let navigate = useNavigate();
 
-  const signIn = (e) => {
+  const signOn = async (e) => {
     e.preventDefault();
-    axios
-      .post("/api/signin", signInFormState)
-      .then((response) => {
-        setUserSession(response.data);
-        axios.get(`/api/users/${response.data.userId}`).then((userResponse) => {
-          setUserProfile(userResponse.data);
-        });
-        navigate("/Chat");
-      })
-      .catch((error) => {
-        alert(error.response.data);
-        setSignInFormState({ ...signInFormState, password: "" });
-      });
+    await logIn(signInFormState);
+    if (!isAuthed) {
+      setSignInFormState({ ...signInFormState, password: "" });
+    } else {
+      navigate("/Chat");
+    }
   };
 
   const formChange = (e) => {
@@ -43,7 +39,7 @@ const SignInPage = ({ setUserSession, setUserProfile, guestSignUp }) => {
           id="signInForm"
           className="align-self-end"
           action="submit"
-          onSubmit={signIn}
+          onSubmit={signOn}
         >
           <div className="row">
             <div className="input-group mb-3">

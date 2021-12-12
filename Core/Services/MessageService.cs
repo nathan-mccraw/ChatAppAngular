@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
+using Core.DBSpecifications;
 using Core.DTOs;
 using Core.Entities;
 using Core.InputValidationModels;
 using Core.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Services
 {
@@ -37,6 +35,46 @@ namespace Core.Services
             _messageRepo.AddEntityToDB(message);
 
             return (_mapper.Map<MessageEntity, MessageModel>(message));
+        }
+
+        public void DeleteMessage(int messageId)
+        {
+            var message = _messageRepo.GetEntityByIdFromDB(messageId);
+            message.DateDeleted = DateTime.Now;
+            _messageRepo.UpdateEntityInDB(message);
+        }
+
+        public IReadOnlyList<MessageModel> GetAllMessagesByChannel(string channelName)
+        {
+            var spec = new GetAllMessagesByChannelSpec(channelName);
+            var messages = _messageRepo.GetEntitiesWithSpec(spec);
+            return _mapper.Map<IReadOnlyList<MessageEntity>, IReadOnlyList<MessageModel>>(messages);
+        }
+
+        public MessageModel GetMessageById(int messageId)
+        {
+            var message = _messageRepo.GetEntityByIdFromDB(messageId);
+            return _mapper.Map<MessageEntity, MessageModel>(message);
+        }
+
+        public MessageModel GetMessageIfNotDeletedById(int messageId)
+        {
+            var message = _messageRepo.GetEntityByIdFromDB(messageId);
+            if (message.DateDeleted == null)
+            {
+                return _mapper.Map<MessageEntity, MessageModel>(message);
+            }
+            else
+            {
+                throw new ApplicationException("This message has been deleted");
+            }
+        }
+
+        public IReadOnlyList<MessageModel> GetMessagesNotDeletedByChannel(string channelName)
+        {
+            var spec = new GetMessagesNotDeletedByChannelSpec(channelName);
+            var messages = _messageRepo.GetEntitiesWithSpec(spec);
+            return _mapper.Map<IReadOnlyList<MessageEntity>, IReadOnlyList<MessageModel>>(messages);
         }
     }
 }

@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
+using Core.DBSpecifications;
 using Core.DTOs;
 using Core.Entities;
 using Core.InputValidationModels;
 using Core.Interfaces;
-using Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Services
 {
@@ -81,6 +79,26 @@ namespace Core.Services
         {
             var specs = new GetUserEntityByUsernameSpec(username);
             return (_userRepo.GetEntityWithSpec(specs) != null);
+        }
+
+        public UserModel GetUserById(int userId)
+        {
+            var user = _userRepo.GetEntityByIdFromDB(userId);
+            return (_mapper.Map<UserEntity, UserModel>(user));
+        }
+
+        public UserModel GetUserNotDeletedById(int userId)
+        {
+            var spec = new GetUserNotDeletedByIdSpec(userId);
+            var user = _userRepo.GetEntityWithSpec(spec);
+            return (_mapper.Map<UserEntity, UserModel>(user));
+        }
+
+        public IReadOnlyList<UserModel> GetUsersNotDeleted()
+        {
+            var spec = new GetUsersNotDeletedSpec();
+            var users = _userRepo.GetEntitiesWithSpec(spec);
+            return (_mapper.Map<IReadOnlyList<UserEntity>, IReadOnlyList<UserModel>>(users));
         }
 
         public bool HasOtherActiveSessions(int userId)

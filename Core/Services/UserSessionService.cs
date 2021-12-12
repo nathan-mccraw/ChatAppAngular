@@ -23,6 +23,10 @@ namespace Core.Services
 
         public bool IsValidSession(UserSessionModel clientSession)
         {
+            if (clientSession == null)
+            {
+                return false;
+            }
             var sessionStoredInDB = _sessionRepo.GetEntityByIdFromDB(clientSession.Id);
             return (sessionStoredInDB.UserToken == clientSession.UserToken && sessionStoredInDB.isActive);
         }

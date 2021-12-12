@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using Core.DTOs;
-using Core.Entities;
+﻿using Core.DTOs;
 using Core.Interfaces;
-using Infrastructure.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,32 +10,28 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly IGenericRepository<UserEntity> _repo;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public UsersController(IGenericRepository<UserEntity> repository, IMapper mapper)
+        public UsersController(IUserService userService)
         {
-            _repo = repository;
-            _mapper = mapper;
+            _userService = userService;
         }
 
         // GET: api/<UsersController>
         [HttpGet]
         public ActionResult<IReadOnlyList<UserModel>> GetUsers()
         {
-            var spec = new GetUsersDropDeletedUsers();
-            var users = _repo.GetEntitiesWithSpec(spec);
-            return Ok(_mapper.Map<IReadOnlyList<UserEntity>, IReadOnlyList<UserModel>>(users));
+            return Ok(_userService.GetUsersNotDeleted());
         }
 
         // GET: api/<UsersController>/5
         [HttpGet("{id}")]
         public ActionResult<UserModel> GetUserById(int id)
         {
-            var user = _repo.GetEntityByIdFromDB(id);
-            return Ok(_mapper.Map<UserEntity, UserModel>(user));
+            return Ok(_userService.GetUserNotDeletedById(id));
         }
     }
 }

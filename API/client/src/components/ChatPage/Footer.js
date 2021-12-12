@@ -1,7 +1,10 @@
 ﻿import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Authentication/useAuth";
 
-const Footer = ({ userProfile, modalStates }) => {
+const Footer = ({ modalStates }) => {
+  const { userProfile } = useAuth();
+
   return (
     <div className="row mt4 justify-content-center align-items-baseline">
       <div className="col-auto p-0">sending message as:</div>

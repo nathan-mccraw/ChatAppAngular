@@ -31,9 +31,9 @@ namespace API.Controllers
             else
             {
                 var newUser = _userService.CreateNewUser(clientUser);
-                var userSession = _userSessService.CreateUserSession(newUser.Id);
+                var newSession = _userSessService.CreateUserSession(newUser.Id);
 
-                return Ok(userSession);
+                return Ok(newSession);
             }
         }
 

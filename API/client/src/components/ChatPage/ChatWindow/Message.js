@@ -1,6 +1,9 @@
 ﻿import React from "react";
+import { useAuth } from "../../../Authentication/useAuth";
 
-const Message = ({ message, messageArray, userProfile }) => {
+const Message = ({ message, messageArray }) => {
+  const { userProfile } = useAuth();
+
   let isNotSameDate = true;
   let index = messageArray.indexOf(message);
   let currentDate = new Date(message.dateCreated);

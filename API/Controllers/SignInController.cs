@@ -1,6 +1,8 @@
-﻿using Core.DTOs;
+﻿using API.Authentication;
+using Core.DTOs;
 using Core.InputValidationModels;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -14,11 +16,13 @@ namespace API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUserSessionService _userSessionService;
+        private readonly IJwtGenerator _jwtGen;
 
-        public SignInController(IUserService userService, IUserSessionService userSessionService)
+        public SignInController(IUserService userService, IUserSessionService userSessionService, IJwtGenerator jwtGen)
         {
             _userService = userService;
             _userSessionService = userSessionService;
+            _jwtGen = jwtGen;
         }
 
         // POST api/SignIn
@@ -31,7 +35,7 @@ namespace API.Controllers
                 var newSession = _userSessionService.CreateUserSession(user.Id);
                 newSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(user.Id);
 
-                return Ok(newSession);
+                return Ok(_jwtGen.GenerateToken(newSession));
             }
             catch (Exception ex)
             {
@@ -41,6 +45,7 @@ namespace API.Controllers
 
         // PUT api/<SignIn>
         [HttpPut]
+        [Authorize]
         public ActionResult<UserSessionModel> EditUserEntity([FromBody] IncomingUserProfileModel clientUser)
         {
             if (_userSessionService.IsValidSession(clientUser.UserSession) == false)
@@ -59,12 +64,13 @@ namespace API.Controllers
             _userService.UpdateUserProfile(clientUser);
             var updatedSession = _userSessionService.UpdateSession(clientUser.UserSession);
             updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(clientUser.UserSession.UserId);
-            return (updatedSession);
+            return (_jwtGen.GenerateToken(updatedSession));
         }
 
         // DELETE api/SignIn/5
         [HttpDelete]
-        public ActionResult Delete(IncomingSignInModel clientUser)
+        [Authorize]
+        public ActionResult DeleteUser(IncomingSignInModel clientUser)
         {
             try
             {

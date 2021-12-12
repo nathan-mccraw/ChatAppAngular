@@ -6,11 +6,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Specifications
+namespace Core.DBSpecifications
 {
-    public class GetUsersDropDeletedUsers : BaseSpecification<UserEntity>
+    public class GetMessagesNotDeletedSpec : BaseSpecification<MessageEntity>
     {
-        public GetUsersDropDeletedUsers() : base(u => u.DateDeleted == null)
+        public GetMessagesNotDeletedSpec() : base(m => m.DateDeleted == null)
         {
         }
     }

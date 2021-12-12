@@ -1,9 +1,10 @@
-﻿import axios from "axios";
-import React from "react";
+﻿import React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../Hooks/useAuthContext";
+import { useSignUp } from "./../Hooks/useSignUp";
 
-const RegisterNewUser = ({ setUserSession, setUserProfile, guestSignUp }) => {
+const RegisterNewUser = ({ guestSignUp }) => {
   const [registerFormState, setRegisterFormState] = useState({
     username: "",
     password: "",
@@ -20,21 +21,16 @@ const RegisterNewUser = ({ setUserSession, setUserProfile, guestSignUp }) => {
   };
 
   const navigate = useNavigate();
+  const { state } = useAuthContext();
+  const { signUp } = useSignUp();
 
-  const registerNewUser = async (e) => {
+  const register = async (e) => {
     e.preventDefault();
-    axios
-      .post("/api/signup", registerFormState)
-      .then((response) => {
-        setUserSession(response.data);
-        axios.get(`/api/users/${response.data.id}`).then((userResponse) => {
-          setUserProfile(userResponse.data);
-        });
-        navigate("/Chat");
-      })
-      .catch((error) => {
-        alert(error.response.data);
-      });
+    await signUp(registerFormState);
+    if (state.isAuthed) {
+      navigate("/Chat");
+    }
+    // if unauthorized display select new username
   };
 
   return (
@@ -43,7 +39,7 @@ const RegisterNewUser = ({ setUserSession, setUserProfile, guestSignUp }) => {
       className="container-fluid vh-100 d-flex justify-content-center align-items-center"
     >
       <div className="col-auto">
-        <form action="submit" onSubmit={registerNewUser}>
+        <form action="submit" onSubmit={register}>
           <div
             id="RegisterFormBox"
             className="bg-secondary border border-dark border-1 p-4"

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Specifications
+namespace Core.DBSpecifications
 {
     public class SpecificationEvaluator<TEntity> where TEntity : BaseEntity
     {

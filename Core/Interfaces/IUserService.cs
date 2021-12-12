@@ -1,5 +1,6 @@
 ﻿using Core.DTOs;
 using Core.InputValidationModels;
+using System.Collections.Generic;
 
 namespace Core.Interfaces
 {
@@ -14,6 +15,12 @@ namespace Core.Interfaces
         public void DeleteUser(int userId);
 
         public bool DoesUsernameExist(string username);
+
+        public UserModel GetUserById(int userId);
+
+        public UserModel GetUserNotDeletedById(int userId);
+
+        public IReadOnlyList<UserModel> GetUsersNotDeleted();
 
         public bool HasOtherActiveSessions(int userId);
 
