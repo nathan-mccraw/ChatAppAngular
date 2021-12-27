@@ -1,0 +1,15 @@
+.registerPage {
+  width: 100%;
+  height: 100vh;
+  background-image: url("../../assets/Trenches2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: dimgray;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.whitebg {
+  height: 100vh;
+}

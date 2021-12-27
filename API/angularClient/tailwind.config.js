@@ -9,6 +9,11 @@ module.exports = {
           200: "#888883",
         },
       },
+      fontFamily: {
+        titlePage: ['"lobster"'],
+        userInput: ["eczar"],
+        subHeader: ['"rampart one"'],
+      },
     },
   },
   plugins: [],

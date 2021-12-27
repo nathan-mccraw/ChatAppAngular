@@ -67,7 +67,7 @@ namespace API.Controllers
             return (_jwtGen.GenerateToken(updatedSession));
         }
 
-        // DELETE api/SignIn/5
+        // DELETE api/SignIn
         [HttpDelete]
         [Authorize]
         public ActionResult DeleteUser(IncomingSignInModel clientUser)

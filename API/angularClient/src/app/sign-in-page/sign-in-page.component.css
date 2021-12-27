@@ -1,0 +1,19 @@
+.signInPage {
+  width: 100%;
+  height: 100vh;
+  background-image: url("../../assets/OutPost.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: dimgray;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.signInSelection > svg {
+  visibility: hidden;
+}
+
+.signInSelection:hover > svg {
+  visibility: visible;
+}
