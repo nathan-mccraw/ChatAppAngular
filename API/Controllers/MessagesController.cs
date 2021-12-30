@@ -13,7 +13,6 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class MessagesController : ControllerBase
     {
         private readonly IHubContext<ChatHub, IChatClient> _chatHub;

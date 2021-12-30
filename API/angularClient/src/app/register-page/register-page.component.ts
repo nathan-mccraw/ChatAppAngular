@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { userAccountFormData } from '../core/interfaces/user-account.model';
+import { CurrentUserProfileService } from '../core/services/current-user-profile.service';
 
 @Component({
   selector: 'app-register-page',
@@ -16,14 +17,21 @@ export class RegisterPageComponent implements OnInit {
     location: '',
     dateOfBirth: new Date
   };
-  
-  constructor() { }
 
+  constructor(private userProfileService: CurrentUserProfileService) { }
   ngOnInit(): void {
   }
 
   onRegister(formData: NgForm){
     console.log(formData);
+    this.newUser.username = formData.value.username;
+    this.newUser.currentPassword = formData.value.password;
+    this.newUser.firstName = formData.value.firstName;
+    this.newUser.lastName = formData.value.lastName;
+    this.newUser.location = formData.value.location;
+    this.newUser.dateOfBirth = formData.value.dateOfBirth;
+
+    this.userProfileService.signUp(this.newUser);
   }
 
 }

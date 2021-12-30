@@ -10,7 +10,6 @@ using System.Linq;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class ValidateUserController : Controller
     {
@@ -44,7 +43,7 @@ namespace API.Controllers
 
             Response.Cookies.Append("Refresh_Token", newEncodedToken, options);
 
-            var updatedSession = _userSessionService.UpdateSession(refreshToken.UserId);
+            var updatedSession = _userSessionService.UpdateSession(refreshToken.SessionId);
             updatedSession.HasOtherActiveSessions = _userService.DoesHaveOtherActiveSessions(refreshToken.UserId);
             return Ok(updatedSession);
         }

@@ -18,7 +18,6 @@ namespace API.Controllers
 
         // PUT: SignOut
         [HttpPut]
-        [Authorize]
         public ActionResult SignOutUser(UserSessionModel clientSession)
         {
             if (_userSessionService.IsValidSession(clientSession))

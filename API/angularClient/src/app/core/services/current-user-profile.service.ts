@@ -19,14 +19,16 @@ export class CurrentUserProfileService {
     this.userAccountService.validateUser()
       .subscribe(data => {
         user.session = data;
-        this.usersService.getUser(user.session.userId)
-          .subscribe(data => {
-            user.profile = data;
-        });
       });
+      
+    this.usersService.getUser(user.session.userId)
+      .subscribe(data => {
+        user.profile = data;
+    });
 
     user.isAuthorized = true;
     this.currentUser.next(user);
+    console.log(user);
   }
 
   signIn(formData: signInFormData){

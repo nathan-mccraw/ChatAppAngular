@@ -59,7 +59,6 @@ namespace API.Controllers
 
         // PUT api/<SignIn>
         [HttpPut]
-        [Authorize]
         public ActionResult<UserSessionModel> EditUserEntity([FromBody] IncomingUserProfileModel clientUser)
         {
             if (_userSessionService.IsValidSession(clientUser.UserSession) == false)
@@ -83,7 +82,6 @@ namespace API.Controllers
 
         // DELETE api/SignIn
         [HttpDelete]
-        [Authorize]
         public ActionResult DeleteUser(IncomingSignInModel clientUser)
         {
             try
