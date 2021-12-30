@@ -31,9 +31,9 @@ namespace Core.Services
             return (sessionStoredInDB.UserToken == clientSession.UserToken && sessionStoredInDB.isActive);
         }
 
-        public UserSessionModel UpdateSession(UserSessionModel clientSession)
+        public UserSessionModel UpdateSession(int sessionId)
         {
-            var sessionStoredInDB = _sessionRepo.GetEntityByIdFromDB(clientSession.Id);
+            var sessionStoredInDB = _sessionRepo.GetEntityByIdFromDB(sessionId);
             sessionStoredInDB.TokenExpirationDate = DateTime.UtcNow.AddMinutes(15);
             sessionStoredInDB.LastActive = DateTime.UtcNow;
             _sessionRepo.UpdateEntityInDB(sessionStoredInDB);

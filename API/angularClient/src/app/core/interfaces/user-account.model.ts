@@ -1,4 +1,4 @@
-export interface userAccount {
+export interface userAccountFormData {
   id?: number;
   username: string;
   currentPassword: string;

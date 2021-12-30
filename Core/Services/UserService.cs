@@ -42,6 +42,8 @@ namespace Core.Services
                 Password = "guest",
                 FirstName = "Guest",
                 LastName = "Guest",
+                Location = "N/A",
+                DateOfBirth = DateTime.UtcNow
             };
             newGuest = _userRepo.AddEntityToDB(newGuest);
             newGuest.Username = "Guest" + newGuest.Id;
@@ -101,7 +103,7 @@ namespace Core.Services
             return (_mapper.Map<IReadOnlyList<UserEntity>, IReadOnlyList<UserModel>>(users));
         }
 
-        public bool HasOtherActiveSessions(int userId)
+        public bool DoesHaveOtherActiveSessions(int userId)
         {
             var userEntity = _userRepo.GetEntityByIdFromDB(userId);
             if (userEntity.UserSessions.Where(session => session.isActive == true).Count() > 1)

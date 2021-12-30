@@ -3,6 +3,7 @@ using Core.DTOs;
 using Core.InputValidationModels;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -33,9 +34,22 @@ namespace API.Controllers
             {
                 var user = _userService.ValidateSignIn(clientUser);
                 var newSession = _userSessionService.CreateUserSession(user.Id);
-                newSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(user.Id);
+                RefreshTokenModel refreshToken = new()
+                {
+                    SessionId = newSession.Id,
+                    UserId = user.Id
+                };
 
-                return Ok(_jwtGen.GenerateToken(newSession));
+                string newEncodedToken = _jwtGen.GenerateRefreshToken(refreshToken);
+
+                CookieOptions options = new();
+                options.Expires = DateTime.UtcNow.AddHours(2);
+                options.HttpOnly = true;
+
+                Response.Cookies.Append("Refresh_Token", newEncodedToken, options);
+                newSession.HasOtherActiveSessions = _userService.DoesHaveOtherActiveSessions(user.Id);
+
+                return Ok(newSession);
             }
             catch (Exception ex)
             {
@@ -62,9 +76,9 @@ namespace API.Controllers
             }
 
             _userService.UpdateUserProfile(clientUser);
-            var updatedSession = _userSessionService.UpdateSession(clientUser.UserSession);
-            updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(clientUser.UserSession.UserId);
-            return (_jwtGen.GenerateToken(updatedSession));
+            var updatedSession = _userSessionService.UpdateSession(clientUser.UserSession.Id);
+            updatedSession.HasOtherActiveSessions = _userService.DoesHaveOtherActiveSessions(clientUser.UserSession.UserId);
+            return (updatedSession);
         }
 
         // DELETE api/SignIn

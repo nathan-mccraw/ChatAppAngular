@@ -20,7 +20,13 @@ namespace API.Authentication
             JwtSecret = _configuration["JwtSecret"];
         }
 
-        public dynamic GenerateToken(UserSessionModel userSession)
+        public JwtSecurityToken DecodeJwt(string encodedToken)
+        {
+            return new JwtSecurityTokenHandler().ReadJwtToken(encodedToken);
+
+        }
+
+        public dynamic GenerateAccessToken(UserSessionModel userSession)
         {
             var claims = new List<Claim>
             {
@@ -37,6 +43,21 @@ namespace API.Authentication
             {
                 Access_Token = new JwtSecurityTokenHandler().WriteToken(token)
             };
+        }
+
+        public string GenerateRefreshToken(RefreshTokenModel refreshToken)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(type: "sessionId", value: refreshToken.SessionId.ToString()),
+                new Claim(type: "userId", value: refreshToken.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.UtcNow.AddHours(2)).ToUnixTimeSeconds().ToString())
+            };
+
+            var token = CreateJwtToken(claims);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+            
         }
 
         private JwtSecurityToken CreateJwtToken(List<Claim> payload)

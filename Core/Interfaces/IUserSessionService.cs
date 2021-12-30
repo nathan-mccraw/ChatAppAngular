@@ -8,7 +8,7 @@ namespace Core.Interfaces
 
         bool IsValidSession(UserSessionModel clientSession);
 
-        UserSessionModel UpdateSession(UserSessionModel clientSession);
+        UserSessionModel UpdateSession(int sessionId);
 
         void SignOut(UserSessionModel clientSession);
     }

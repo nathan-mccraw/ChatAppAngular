@@ -55,6 +55,7 @@ namespace API.Controllers
         {
             if (_userSessionService.IsValidSession(inputMessage.UserSession) == false)
             {
+
                 return Unauthorized("Please signin and try again");
             }
             else if (_userService.IsUserDeleted(inputMessage.UserSession.UserId))
@@ -62,8 +63,8 @@ namespace API.Controllers
                 return Unauthorized("This account have been deleted");
             }
 
-            var updatedSession = _userSessionService.UpdateSession(inputMessage.UserSession);
-            updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(inputMessage.UserSession.UserId);
+            var updatedSession = _userSessionService.UpdateSession(inputMessage.UserSession.Id);
+            updatedSession.HasOtherActiveSessions = _userService.DoesHaveOtherActiveSessions(inputMessage.UserSession.UserId);
 
             //make new outgoing message model
             MessageModel outgoingMessage = _messageService.CreateMessage(inputMessage);
@@ -71,7 +72,7 @@ namespace API.Controllers
             //broadcast to other clients a new message has been posted
             _chatHub.Clients.All.ReceiveMessage(outgoingMessage);
 
-            return Ok(_jwtGen.GenerateToken(updatedSession));
+            return Ok(updatedSession);
         }
 
         // DELETE api/Messages/5
@@ -87,13 +88,13 @@ namespace API.Controllers
                 return Unauthorized("This account have been deleted");
             }
 
-            var updatedSession = _userSessionService.UpdateSession(clientSession);
-            updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(clientSession.UserId);
+            var updatedSession = _userSessionService.UpdateSession(clientSession.Id);
+            updatedSession.HasOtherActiveSessions = _userService.DoesHaveOtherActiveSessions(clientSession.UserId);
 
             try
             {
                 _messageService.DeleteMessage(clientMessage.Id);
-                return Ok(_jwtGen.GenerateToken(updatedSession));
+                return Ok(updatedSession);
             }
             catch (Exception ex)
             {

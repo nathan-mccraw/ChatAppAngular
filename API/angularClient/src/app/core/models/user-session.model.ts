@@ -1,6 +1,6 @@
-export interface userSession {
-  id?: number;
-  userId?: number;
-  userToken?: string;
-  hasOtherActiveSessions: boolean;
+export class userSession {
+  sessionId: number = 0;
+  userId: number = 0;
+  userToken: string = '';
+  hasOtherActiveSessions: boolean = false;
 }

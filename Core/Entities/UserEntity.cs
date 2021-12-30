@@ -12,6 +12,8 @@ namespace Core.Entities
         public virtual string Password { get; set; }
         public virtual string FirstName { get; set; }
         public virtual string LastName { get; set; }
+        public virtual string Location { get; set;}
+        public virtual DateTime DateOfBirth { get; set; }
         public virtual IList<UserSessionEntity> UserSessions { get; set; }
 
         public virtual DateTime DateCreated { get; set; } = DateTime.UtcNow;

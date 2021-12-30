@@ -22,7 +22,7 @@ namespace Core.Interfaces
 
         public IReadOnlyList<UserModel> GetUsersNotDeleted();
 
-        public bool HasOtherActiveSessions(int userId);
+        public bool DoesHaveOtherActiveSessions(int userId);
 
         public bool IsUserDeleted(int userId);
 

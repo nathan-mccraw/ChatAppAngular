@@ -24,6 +24,7 @@ namespace API.Controllers
             if (_userSessionService.IsValidSession(clientSession))
             {
                 _userSessionService.SignOut(clientSession);
+                Response.Cookies.Delete("Refresh_Token");
                 return Ok("Signed Out");
             }
             else

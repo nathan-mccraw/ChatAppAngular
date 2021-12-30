@@ -1,11 +1,16 @@
 ﻿using API.Authentication;
 using Core.DTOs;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ValidateUserController : Controller
     {
@@ -20,21 +25,28 @@ namespace API.Controllers
             _jwtGen = jwtGen;
         }
 
-        [HttpPost]
-        public ActionResult ValidateUser(UserSessionModel clientUser)
+        [HttpGet]
+        public ActionResult ValidateUser()
         {
-            // if session is null and jwt is not expired and user has active sessions;
-            // return new session
-            if (clientUser.Id != 0 && _userSessionService.IsValidSession(clientUser))
+            Request.Cookies.TryGetValue("Refresh_Token", out var encodedToken);
+            var token = _jwtGen.DecodeJwt(encodedToken);
+            RefreshTokenModel refreshToken = new()
             {
-                var updatedSession = _userSessionService.UpdateSession(clientUser);
-                updatedSession.HasOtherActiveSessions = _userService.HasOtherActiveSessions(clientUser.UserId);
-                return Ok(_jwtGen.GenerateToken(clientUser));
-            }
-            else
-            {
-                return Unauthorized();
-            }
+                SessionId = Int32.Parse(token.Claims.First(c => c.Type == "sessionId").Value),
+                UserId = Int32.Parse(token.Claims.First(c => c.Type == "userId").Value)
+            };
+
+            var newEncodedToken = _jwtGen.GenerateRefreshToken(refreshToken);
+
+            CookieOptions options = new();
+            options.Expires = DateTime.UtcNow.AddHours(2);
+            options.HttpOnly = true;
+
+            Response.Cookies.Append("Refresh_Token", newEncodedToken, options);
+
+            var updatedSession = _userSessionService.UpdateSession(refreshToken.UserId);
+            updatedSession.HasOtherActiveSessions = _userService.DoesHaveOtherActiveSessions(refreshToken.UserId);
+            return Ok(updatedSession);
         }
     }
 }

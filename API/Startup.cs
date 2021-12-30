@@ -4,19 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using NHibernate.NetCore;
 using API.Hub;
-using Core.Interfaces;
-using Infrastructure.Repository;
-using AutoMapper;
-using API.Helpers;
-using Core.Services;
-using API.Authentication;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using API.StartUpExtensions;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace API
 {
@@ -31,67 +21,40 @@ namespace API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var mapperConfig = new MapperConfiguration(mc =>
+            services.AddCustomAutomapperExtension();
+
+            services.AddCustomJwtAuthExtension(_configuration);
+
+            services.AddCustomNHibernateExtension(_configuration);
+
+            //services.AddCustomCorsExtension();
+
+            services.AddCustomSwaggerExtension();
+
+            services.AddCustomDIExtension();
+
+            services.AddControllers();
+
+            services.AddSignalR();
+            
+            services.AddCookiePolicy(options =>
             {
-                mc.AddProfile(new MappingProfiles());
+                options.ConsentCookie.HttpOnly = true;
             });
 
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            services.AddSpaStaticFiles(config =>
+                config.RootPath = "angularClient/dist");
 
-            string JwtSecret = _configuration["JwtSecret"];
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "JwtBearer";
-                options.DefaultChallengeScheme = "JwtBearer";
-            })
-                .AddJwtBearer("JwtBearer", JwtBearerOptions =>
-                {
-                    JwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSecret)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.FromMinutes(5)
-                    };
-                });
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //    .AddJwtBearer(options =>
             //    {
             //        options.Audience = _configuration["AAD:ResourceId"];
             //        options.Authority = $"{_configuration["AAD:InstanceId"]}{_configuration["AAD:TentantId"]}";
             //    });
-
-            var path = System.IO.Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "nhibernate.cfg.xml"
-                );
-            var connString = _configuration["ConnectionStrings:Default"];
-            var config = new NHibernate.Cfg.Configuration().Configure(path);
-            config.SetProperty(NHibernate.Cfg.Environment.ConnectionString, connString);
-            services.AddHibernate(config);
-            services.AddControllers();
-            services.AddSignalR();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUserSessionService, UserSessionService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IJwtGenerator, JwtGenerator>();
-            services.AddSpaStaticFiles(config =>
-                config.RootPath = "client/build");
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -100,6 +63,10 @@ namespace API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
+
+            //app.UseCors();
+
+            //app.UseStatusCodePagesWithReExecute("/error/{0}");
 
             app.UseHttpsRedirection();
 
@@ -110,6 +77,8 @@ namespace API
             app.UseAuthorization();
 
             app.UseSpaStaticFiles();
+
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {
@@ -122,10 +91,10 @@ namespace API
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "client";
+                spa.Options.SourcePath = "angularClient";
                 if (env.IsDevelopment())
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.UseAngularCliServer("start");
                 }
             });
         }
