@@ -59,7 +59,9 @@ namespace Core.Services
                 Username = clientUser.Username,
                 Password = clientUser.Password,
                 FirstName = clientUser.FirstName,
-                LastName = clientUser.LastName
+                LastName = clientUser.LastName,
+                Location = clientUser.Location,
+                DateOfBirth = clientUser.DateOfBirth
             };
 
             newUserEntity = _userRepo.AddEntityToDB(newUserEntity);
@@ -126,7 +128,7 @@ namespace Core.Services
         {
             var storedUserEntity = _userRepo.GetEntityByIdFromDB(clientUser.UserSession.UserId);
 
-            if (clientUser.Username != null)
+            if (clientUser.Username != "")
             {
                 storedUserEntity.Username = clientUser.Username;
             }
@@ -137,6 +139,16 @@ namespace Core.Services
             }
 
             if (clientUser.LastName != "")
+            {
+                storedUserEntity.LastName = clientUser.LastName;
+            }
+
+            if (clientUser.Location != "")
+            {
+                storedUserEntity.Location = clientUser.Location;
+            }
+
+            if (clientUser.DateOfBirth != null)
             {
                 storedUserEntity.LastName = clientUser.LastName;
             }

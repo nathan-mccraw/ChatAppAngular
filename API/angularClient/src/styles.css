@@ -8,10 +8,6 @@
   @apply pt-2 text-center text-8xl font-titlePage bg-slate-600 border-b-4 border-black
 }
 
-.inputStyle {
-  @apply m-1 p-1 font-userInput text-lg bg-gray-200 border-black border-2 rounded
-}
-
 .btn {
   @apply rounded-full py-2 px-3 uppercase text-xs font-bold cursor-pointer tracking-wider;
 }

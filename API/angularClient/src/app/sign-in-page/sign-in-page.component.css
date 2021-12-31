@@ -17,3 +17,15 @@
 .signInSelection:hover > svg {
   visibility: visible;
 }
+
+.componentInputStyle {
+  @apply m-1 p-1 pt-2 pl-11 font-userInput text-lg bg-gray-200 border-black border-2 rounded-full
+}
+
+.formBackground {
+  @apply absolute bottom-[15%] left-[43%] text-center bg-slate-200/50 p-4 rounded-lg
+}
+
+.formLinkButtons {
+  @apply flex justify-center align-middle
+}

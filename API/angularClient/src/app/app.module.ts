@@ -12,6 +12,7 @@ import { TextInputComponent } from './edit-profile-page/text-input.component';
 import { PasswordInputComponent } from './edit-profile-page/password-input.component';
 import { DateInputComponent } from './edit-profile-page/date-input.component';
 import { ChatPageComponent } from './chat-page/chat-page.component';
+import { ChevronRightComponent } from './sign-in-page/chevron-right.componet';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { ChatPageComponent } from './chat-page/chat-page.component';
     PasswordInputComponent,
     DateInputComponent,
     ChatPageComponent,
+    ChevronRightComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

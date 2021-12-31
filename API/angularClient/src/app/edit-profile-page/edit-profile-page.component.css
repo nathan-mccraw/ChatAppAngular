@@ -1,3 +1,15 @@
 .editProfile {
   height: 100vh;
 }
+
+.avatarFrame{
+  @apply h-fit self-start col-start-5 col-span-1 border-gray-600 border-2 bg-gray-100/50 rounded-lg hover:cursor-pointer
+}
+
+.localButton{
+  @apply rounded-full py-2 px-3 uppercase text-xs font-bold cursor-pointer tracking-wider mr-4 w-fit border border-black shadow text-center hover:inset-10
+}
+
+.dateInput {
+  @apply m-1 p-1 font-userInput text-lg bg-gray-200 border-black border-2 rounded
+}

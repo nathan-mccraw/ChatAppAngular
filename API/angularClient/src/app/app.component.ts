@@ -10,6 +10,6 @@ export class AppComponent implements OnInit{
   constructor(private currentUser: CurrentUserProfileService){}
 
   ngOnInit(): void {
-      this.currentUser.validateUser();
+      //this.currentUser.validateUser();
   }
 }

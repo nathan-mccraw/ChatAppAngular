@@ -9,90 +9,56 @@
     The Outpost
   </div>
   <div class="pt-4 text-center text-3xl font-subHeader">User Profile</div>
-  <div class="">
-    <form action="">
-      <div class="grid grid-cols-12 pt-4">
-        <div class="
-            h-fit
-            self-center
-            col-start-5 col-span-1
-            border-gray-600 border-2
-            bg-gray-100/50
-            rounded-lg
-            hover:cursor-pointer
-          ">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-max text-slate-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-              clip-rule="evenodd" />
-          </svg>
-          <div class="font-mono text-center text-slate-700">EDIT AVATAR</div>
-        </div>
-        <div class="col-span-3 ml-4 p-3">
-          <app-text-input [inputName]="'Username'"></app-text-input>
-          <div class="flex flex-col mt-2">
-            <app-password-input [inputName]="'Password'"></app-password-input>
-            <app-text-input [inputName]="'First Name'"></app-text-input>
-            <app-text-input [inputName]="'Last Name'"></app-text-input>
-            <app-text-input [inputName]="'Location'"></app-text-input>
-            <div *ngIf="editDate == false; else showEditDate" class="flex">
-              <div>Date:</div>
-              <div class="ml-1 font-userInput text-lg">01/14/1987</div>
-              <svg (click)="editDate = true" xmlns="http://www.w3.org/2000/svg" class="w-3 ml-2 hover:cursor-pointer"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-            </div>
-            <ng-template #showEditDate>
-              <div class="flex flex-col mt-2">
-                <div class="flex justify-between">
-                  <label class="">Date:</label>
-                  <svg (click)="editDate = false" xmlns="http://www.w3.org/2000/svg"
-                    class="w-5 ml-2 hover:cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <input type="date" name="username" class="
-                      m-1
-                      p-1
-                      font-userInput
-                      text-lg
-                      bg-gray-200
-                      border-black border-2
-                      rounded
-                    " />
-              </div>
-            </ng-template>
+  <form action="">
+    <div class="grid grid-cols-12 pt-4">
+      <div class="avatarFrame">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-max text-slate-600" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+            clip-rule="evenodd" />
+        </svg>
+        <div class="font-mono text-center text-slate-700">EDIT AVATAR</div>
+      </div>
+      <div class="col-span-3 ml-4 p-3">
+        <app-text-input [inputName]="'Username'"></app-text-input>
+        <div class="flex flex-col mt-2">
+          <app-password-input [inputName]="'Password'"></app-password-input>
+          <app-text-input [inputName]="'First Name'"></app-text-input>
+          <app-text-input [inputName]="'Last Name'"></app-text-input>
+          <app-text-input [inputName]="'Location'"></app-text-input>
+          <div *ngIf="editDate == false; else showEditDate" class="flex">
+            <div>Date:</div>
+            <div class="ml-1 font-userInput text-lg">01/14/1987</div>
+            <svg (click)="editDate = true" xmlns="http://www.w3.org/2000/svg" class="w-3 ml-2 hover:cursor-pointer"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
           </div>
+          <ng-template #showEditDate>
+            <div class="flex flex-col mt-2">
+              <div class="flex justify-between">
+                <label class="">Date:</label>
+                <svg (click)="editDate = false" xmlns="http://www.w3.org/2000/svg" class="w-5 ml-2 hover:cursor-pointer"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <input type="date" name="username" class="dateInput
+                " />
+            </div>
+          </ng-template>
         </div>
       </div>
-      <div class="submitSelection flex justify-center">
-        <div class="
-            mr-4
-            w-fit
-            btn
-            border border-black border-1
-            bg-gray-400
-            shadow
-            text-center
-            hover:bg-green-700 hover:inset-10
-          ">
-          Submit
-        </div>
-        <div class="
-            w-fit
-            btn
-            border border-black border-1
-            bg-gray-400
-            shadow
-            text-center
-            hover:bg-red-700 hover:inset-10
-          ">
-          Cancel
-        </div>
-      </div>
-    </form>
-  </div>
+    </div>
+    <div class="submitSelection flex justify-center">
+      <button class="localButton bg-gray-400 hover:bg-green-700">
+        Submit
+      </button>
+      <button class="localButton bg-gray-400 hover:bg-red-700">
+        Cancel
+      </button>
+    </div>
+  </form>
 </div>

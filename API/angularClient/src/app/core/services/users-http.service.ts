@@ -14,6 +14,6 @@ export class usersHttpService {
   }
 
   getUsers() {
-    return this.http.get(`api/users`);
+    return this.http.get<userProfile[]>(`api/users`);
   }
 }

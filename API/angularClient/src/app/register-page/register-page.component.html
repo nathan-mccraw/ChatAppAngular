@@ -9,15 +9,7 @@
     <div class="">
       <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm">
         <div class="grid grid-cols-12 pt-4">
-          <div class="
-              h-fit
-              self-center
-              col-start-5 col-span-1
-              border-gray-600 border-2
-              bg-gray-100/50
-              rounded-lg
-              hover:cursor-pointer
-            ">
+          <div class="avatarFrame">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-max text-slate-600" viewBox="0 0 20 20"
               fill="currentColor">
               <path fill-rule="evenodd"
@@ -29,15 +21,15 @@
           <div class="col-span-3 ml-4 p-3">
             <div class="flex flex-col mt-2">
               <label class="">Username:</label>
-              <input type="text" name="username" class="inputStyle" ngModel />
+              <input type="text" name="username" class="componentInputStyle" ngModel />
             </div>
             <div class="flex flex-col mt-2">
               <label class="">Password:</label>
-              <input type="password" name="password" class="inputStyle" ngModel />
+              <input type="password" name="password" class="componentInputStyle" ngModel />
             </div>
             <div class="flex flex-col mt-2">
               <label class="">Confirm Password:</label>
-              <input type="password" class="inputStyle" />
+              <input type="password" class="componentInputStyle" />
             </div>
           </div>
         </div>
@@ -45,19 +37,19 @@
           <div class="col-start-6 col-span-3 ml-4 p-3 pt-0">
             <div class="flex flex-col mt-2">
               <label class="">First Name:</label>
-              <input type="text" name="firstName" class="inputStyle" ngModel />
+              <input type="text" name="firstName" class="componentInputStyle" ngModel />
             </div>
             <div class="flex flex-col mt-2">
               <label class="">Last Name:</label>
-              <input type="text" name="lastName" class="inputStyle" ngModel />
+              <input type="text" name="lastName" class="componentInputStyle" ngModel />
             </div>
             <div class="flex flex-col mt-2">
               <label class="">Location:</label>
-              <input type="text" name="location" class="inputStyle" ngModel />
+              <input type="text" name="location" class="componentInputStyle" ngModel />
             </div>
             <div class="flex flex-col mt-2">
               <label class="">Date of Birth:</label>
-              <input type="date" name="dateOfBirth" class="inputStyle" ngModel />
+              <input type="date" name="dateOfBirth" class="componentInputStyle" ngModel />
             </div>
           </div>
         </div>

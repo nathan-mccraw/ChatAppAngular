@@ -8,8 +8,3 @@ export class userProfile{
     dateCreated: Date = new Date;
     lastActive: Date = new Date;
 }
-
-export class otherUsers{
-    isDataLoading: boolean = false;
-    profiles: userProfile[] = [];
-}

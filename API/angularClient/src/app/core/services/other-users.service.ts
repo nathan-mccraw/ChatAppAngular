@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
-import { otherUsers } from "../models/user-profile.model";
+import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
+import { userProfile } from "../models/user-profile.model";
 import { usersHttpService } from "./users-http.service";
 
 @Injectable({
@@ -8,16 +8,15 @@ import { usersHttpService } from "./users-http.service";
 })
 
 export class otherUsersDataService {
-    otherUsers: Subject<otherUsers> = new BehaviorSubject(new otherUsers);
+    otherUsers: Subject<userProfile[]> = new ReplaySubject();
 
     constructor(private usersService: usersHttpService){}
 
     getOtherUsersArray(){
-        this.usersService.getUsers().subscribe((data: any) => {
+        this.usersService.getUsers().subscribe((data) => {
+            this.otherUsers.next(data)
             console.log(`Attempted get other Users and received back:`)
             console.log(data);
         })
-        
-        //this.otherUsers.next(OtherUsersArray);
     }
 }

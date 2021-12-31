@@ -1,7 +1,9 @@
+import { userSession } from "../models/user-session.model";
+
 export interface userAccountFormData {
-  id?: number;
+  userSession?: userSession;
   username: string;
-  currentPassword: string;
+  password: string;
   newPassword?: string;
   firstName?: string;
   lastName?: string;

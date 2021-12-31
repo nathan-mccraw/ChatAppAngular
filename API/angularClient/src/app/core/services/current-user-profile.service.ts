@@ -19,44 +19,44 @@ export class CurrentUserProfileService {
     this.userAccountService.validateUser()
       .subscribe(data => {
         user.session = data;
-      });
-      
-    this.usersService.getUser(user.session.userId)
-      .subscribe(data => {
-        user.profile = data;
-    });
 
-    user.isAuthorized = true;
-    this.currentUser.next(user);
-    console.log(user);
+        this.usersService.getUser(user.session.userId)
+          .subscribe(data => {
+                user.profile = data;
+        });
+
+        user.isAuthorized = true;
+        this.currentUser.next(user);
+        console.log(user);
+      });
   }
 
   signIn(formData: signInFormData){
     let user: currentUserModel = new currentUserModel();
     this.userAccountService.signIn(formData).subscribe(data => {
         user.session = data;
+
+        this.usersService.getUser(user.session.userId).subscribe(data => {
+          user.profile = data;
+        });
+
+        user.isAuthorized = true;
+        this.currentUser.next(user);
       });
-    
-    this.usersService.getUser(user.session.userId).subscribe(data => {
-        user.profile = data;
-      });
-    
-    user.isAuthorized = true;
-    this.currentUser.next(user);
   }
 
   signUp(formData: userAccountFormData){
     let user: currentUserModel = new currentUserModel();
     this.userAccountService.signUpUser(formData).subscribe(data => {
         user.session = data;
+
+        this.usersService.getUser(user.session.userId).subscribe(data => {
+          user.profile = data;
+        });
+      
+      user.isAuthorized = true;
+      this.currentUser.next(user);
       });
-    
-    this.usersService.getUser(user.session.userId).subscribe(data => {
-        user.profile = data;
-      });
-    
-    user.isAuthorized = true;
-    this.currentUser.next(user);
   }
 
   signUpAsGuest(){

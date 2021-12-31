@@ -11,7 +11,7 @@ import { CurrentUserProfileService } from '../core/services/current-user-profile
 export class RegisterPageComponent implements OnInit {
   newUser: userAccountFormData = {
     username: '',
-    currentPassword: '',
+    password: '',
     firstName: '',
     lastName: '',
     location: '',
@@ -25,7 +25,7 @@ export class RegisterPageComponent implements OnInit {
   onRegister(formData: NgForm){
     console.log(formData);
     this.newUser.username = formData.value.username;
-    this.newUser.currentPassword = formData.value.password;
+    this.newUser.password = formData.value.password;
     this.newUser.firstName = formData.value.firstName;
     this.newUser.lastName = formData.value.lastName;
     this.newUser.location = formData.value.location;
